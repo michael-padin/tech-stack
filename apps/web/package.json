@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
+    "@hookform/resolvers": "^5.6.0",
     "@repo/db": "workspace:*",
     "@repo/env": "workspace:*",
     "@repo/logger": "workspace:*",
@@ -17,12 +17,12 @@
     "@repo/types": "workspace:*",
     "@repo/ui": "workspace:*",
     "@sentry/nextjs": "^9.0.0",
-    "date-fns": "^4.1.0",
+    "date-fns": "^4.4.0",
     "lucide-react": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-hook-form": "^7.71.1",
+    "react-hook-form": "^7.84.0",
     "zod": "catalog:"
   },
   "devDependencies": {
