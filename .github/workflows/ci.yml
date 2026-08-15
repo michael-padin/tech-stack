@@ -24,7 +24,7 @@ jobs:
       NEXT_PUBLIC_WEB_URL: http://localhost:3000
       NEXT_PUBLIC_ADMIN_URL: http://localhost:3001
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4
 
@@ -57,7 +57,7 @@ jobs:
     env:
       NEXT_PUBLIC_APP_NAME: Internal Tools
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Secret scan (gitleaks)
