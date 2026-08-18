@@ -16,7 +16,7 @@
     "@repo/storage": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/ui": "workspace:*",
-    "@sentry/nextjs": "^9.0.0",
+    "@sentry/nextjs": "^10.70.0",
     "date-fns": "^4.4.0",
     "lucide-react": "catalog:",
     "next": "catalog:",
