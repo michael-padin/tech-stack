@@ -23,7 +23,7 @@ catalog:
   # UI
   "@tailwindcss/postcss": ^4
   tailwindcss: ^4.3.3
-  lucide-react: ^0.575.0
+  lucide-react: ^1.31.0
   mapbox-gl: ^3.21.0
 
   # auth
