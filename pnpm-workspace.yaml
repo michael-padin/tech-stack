@@ -7,7 +7,7 @@ packages:
 # packages stay literal (they describe what's acceptable, not what's pinned).
 catalog:
   # framework
-  next: ^16.2.12
+  next: ^16.3.1
   react: 19.2.8
   react-dom: 19.2.8
 
@@ -27,4 +27,4 @@ catalog:
   mapbox-gl: ^3.21.0
 
   # auth
-  better-auth: ^1.6.25
+  better-auth: ^1.6.29
