@@ -7,14 +7,14 @@ packages:
 # packages stay literal (they describe what's acceptable, not what's pinned).
 catalog:
   # framework
-  next: ^16.2.12
-  react: 19.2.8
-  react-dom: 19.2.8
+  next: ^16.3.5
+  react: 19.3.0
+  react-dom: 19.3.0
 
   # types
   "@types/node": ^24.0.0
-  "@types/react": ^19.2.18
-  "@types/react-dom": ^19.2.4
+  "@types/react": ^19.3.0
+  "@types/react-dom": ^19.3.0
 
   # core tooling
   typescript: ^5.7.0
@@ -27,4 +27,4 @@ catalog:
   mapbox-gl: ^3.21.0
 
   # auth
-  better-auth: ^1.6.25
+  better-auth: ^1.7.4
