@@ -1,6 +1,6 @@
 import { defineConfig } from "vitest/config";
 
-// Shared defaults for every project in the Vitest workspace (vitest.workspace.ts).
+// Shared Vitest config for the workspace.
 // Internal `@repo/*` packages are consumed as TypeScript source (no build step),
 // so Vitest's esbuild transform compiles them on the fly — nothing to pre-build.
 export default defineConfig({

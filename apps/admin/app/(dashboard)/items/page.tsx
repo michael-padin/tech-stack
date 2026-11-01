@@ -3,7 +3,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PackageIcon, PlusIcon, SearchIcon } from "lucide-react";
 
-import { requireAdmin } from "@repo/auth/next";
+import { requireCapability } from "@repo/auth/next";
+import { hasPermission } from "@repo/auth/permissions";
 import { listItemsPaginated } from "@repo/db/queries/items";
 import { itemFilterSchema, pageQuerySchema, type ItemFilters } from "@repo/types";
 
@@ -32,7 +33,9 @@ type SearchParams = {
 };
 
 export default async function ItemsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
-  await requireAdmin();
+  const session = await requireCapability("items.read");
+  const canCreate = hasPermission(session.user, "items.create");
+  const canDelete = hasPermission(session.user, "items.delete");
   const params = await searchParams;
 
   // Filters come from the URL — partial() lets each param fall back to its
@@ -59,9 +62,11 @@ export default async function ItemsPage({ searchParams }: { searchParams: Promis
               The example CRUD resource. Swap it for your own domain entity.
             </p>
           </div>
-          <Link href="/items/new" className={buttonVariants({ size: "sm" })}>
-            <PlusIcon aria-hidden="true" /> New item
-          </Link>
+          {canCreate ? (
+            <Link href="/items/new" className={buttonVariants({ size: "sm" })}>
+              <PlusIcon aria-hidden="true" /> New item
+            </Link>
+          ) : null}
         </div>
       </header>
 
@@ -73,7 +78,13 @@ export default async function ItemsPage({ searchParams }: { searchParams: Promis
             key={`${search}-${status}-${page.page}-${pageSize}`}
             fallback={<TableSkeleton />}
           >
-            <ItemsBody filters={filters} page={page.page} pageSize={pageSize} />
+            <ItemsBody
+              filters={filters}
+              page={page.page}
+              pageSize={pageSize}
+              canCreate={canCreate}
+              canDelete={canDelete}
+            />
           </Suspense>
         </div>
       </div>
@@ -85,10 +96,14 @@ async function ItemsBody({
   filters,
   page,
   pageSize,
+  canCreate,
+  canDelete,
 }: {
   filters: Partial<ItemFilters>;
   page: number;
   pageSize: number;
+  canCreate: boolean;
+  canDelete: boolean;
 }) {
   const result = await listItemsPaginated(filters, { page, pageSize });
   // A stale or hand-edited ?page= past the end shows the last page instead of
@@ -116,7 +131,7 @@ async function ItemsBody({
               : "The catalog is empty. Create the first item to get started."}
           </EmptyDescription>
         </EmptyHeader>
-        {isFiltered ? null : (
+        {isFiltered || !canCreate ? null : (
           <EmptyContent>
             <Link href="/items/new" className={buttonVariants()}>
               <PlusIcon aria-hidden="true" /> New item
@@ -134,7 +149,7 @@ async function ItemsBody({
 
   return (
     <>
-      <ItemsTable items={result.rows} />
+      <ItemsTable items={result.rows} canDelete={canDelete} />
       <ListPagination
         page={result.page}
         pageCount={result.pageCount}

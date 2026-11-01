@@ -133,11 +133,13 @@ provider is wired by default).
 
 ## Protecting routes
 
-`requireAdmin()` from `@repo/auth/next` is the source of truth. It reads the
-session, then redirects to `/sign-in` (no session) or `/forbidden` (not an
-admin, or banned and the ban hasn't expired).
+The gates in `@repo/auth/next` are the source of truth. Each reads the session
+(deduplicated per request with React `cache()`), then redirects to `/sign-in`
+(no session) or `/forbidden` (not allowed, or banned and the ban hasn't expired):
 
-For the non-admin roles, two sibling gates with the same redirect conventions:
+- **`requireSession()`** — any signed-in, non-banned role. The dashboard layout
+  and `/profile` use it.
+- **`requireAdmin()`** — admins only.
 
 - **`requireRole(...roles)`** — admits the session only if its role is one of
   the listed ones, e.g. `await requireRole("admin", "editor")`.
@@ -146,19 +148,22 @@ For the non-admin roles, two sibling gates with the same redirect conventions:
   Prefer this for resource guards so role membership stays an implementation
   detail.
 
-Both redirect to `/sign-in` when unauthenticated and `/forbidden` when the role
-or capability isn't granted (or the user is banned), exactly like
-`requireAdmin()`.
+The template's pages and actions gate with capabilities: items with
+`items.read|create|update|delete`, users with `users.manage`. The sidebar hides
+links the role can't open and item screens hide controls (viewers get a
+read-only form) — convenience only; the gate on the page/action decides.
 
 ### Server Components
 
 ```tsx
-import { requireAdmin } from "@repo/auth/next";
+import { requireCapability } from "@repo/auth/next";
+import { hasPermission } from "@repo/auth/permissions";
 
 export default async function ItemsPage() {
-  const session = await requireAdmin();
-  // ↑ redirects to /sign-in if no session, /forbidden if not an admin
-  return <ItemsTable ownerId={session.user.id} />;
+  const session = await requireCapability("items.read");
+  // ↑ redirects to /sign-in if no session, /forbidden without items.read
+  const canDelete = hasPermission(session.user, "items.delete");
+  return <ItemsTable canDelete={canDelete} />;
 }
 ```
 
@@ -166,11 +171,18 @@ export default async function ItemsPage() {
 
 ```ts
 "use server";
-import { requireAdmin } from "@repo/auth/next";
+import { requireCapability } from "@repo/auth/next";
 
-export async function deleteItemAction(id: string) {
-  await requireAdmin();
-  // ... mutate via @repo/db, then invalidate the cache tag
+export async function deleteItemAction(id: string): Promise<ActionResult> {
+  const session = await requireCapability("items.delete");
+  try {
+    await softDeleteItem(id);
+    await audit(session.user, { action: "item.delete", entity: "item", entityId: id });
+  } catch (error) {
+    return actionError(error, "Couldn't delete item.");
+  }
+  updateTag(CACHE_TAGS.items);
+  return actionOk;
 }
 ```
 
@@ -185,7 +197,7 @@ export async function GET() {
 }
 ```
 
-`requireAdmin()` calls `redirect()` from `next/navigation` on failure, which
+The gates call `redirect()` from `next/navigation` on failure, which
 throws `NEXT_REDIRECT` — Next.js catches it and emits the redirect response.
 
 ### Client components
@@ -301,7 +313,9 @@ call Better Auth's admin API:
 - `removeUserAction` — revoke sessions, then `auth.api.removeUser`
 - `resetUserPasswordAction` — `setUserPassword` + `revokeUserSessions`
 
-Each guards with `requireAdmin()` first. The profile page
+Each guards with `requireCapability("users.manage")`, validates its input with
+Zod, refuses to ban or remove your own account or the last active admin, and
+writes an audit entry. The profile page
 (`/profile`) lets a user revoke their own device sessions via
 `revokeMySessionAction`.
 

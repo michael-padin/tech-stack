@@ -35,7 +35,7 @@ function relativeTime(iso: string): string {
   return iso.slice(0, 10);
 }
 
-export function ItemsTable({ items }: { items: Item[] }) {
+export function ItemsTable({ items, canDelete }: { items: Item[]; canDelete: boolean }) {
   const router = useRouter();
 
   return (
@@ -73,7 +73,7 @@ export function ItemsTable({ items }: { items: Item[] }) {
                   {relativeTime(item.updatedAt)}
                 </TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
-                  <ItemRowActions itemId={item.id} itemTitle={item.title} />
+                  <ItemRowActions itemId={item.id} itemTitle={item.title} canDelete={canDelete} />
                 </TableCell>
               </TableRow>
             ))}

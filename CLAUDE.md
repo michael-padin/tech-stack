@@ -106,11 +106,14 @@ adapter.
 - `proxy.ts` (replaces `middleware.ts` post-CVE-2025-29927) is **optimistic,
   cookie-only** in the admin app — never the sole gate. The web app's `proxy.ts`
   does per-IP rate limiting, not auth.
-- `requireAdmin()` from `@repo/auth/next`, called in Server Components / route
-  handlers / Server Actions, is the source of truth. It redirects to `/sign-in`
-  (no session) or `/forbidden` (not admin / banned). `requireRole(...roles)` and
-  `requireCapability(capability)` are the non-admin gates with the same redirect
-  conventions.
+- The gates in `@repo/auth/next`, called in Server Components / route handlers /
+  Server Actions, are the source of truth: `requireCapability(capability)` for
+  resources (items pages/actions use `items.*`, users use `users.manage`),
+  `requireSession()` for surfaces every role sees (the dashboard shell,
+  profile), `requireAdmin()` / `requireRole(...)` when a role is really meant.
+  All redirect to `/sign-in` (no session) or `/forbidden` (not allowed /
+  banned). The session lookup is `cache()`d, so gating in layout + page is
+  free. The sidebar hides links the role can't open; the page is still the gate.
 - Only the admin app mounts `/api/auth/[...all]`.
 
 **Database** — plain Postgres via Prisma 7 + `@prisma/adapter-pg` (node-postgres).
@@ -176,7 +179,11 @@ files — reference `"catalog:"`.
 - **Server-side data fetching by default.** Drop to `"use client"` only when
   needed for interactivity.
 - **Mutations are Server Actions** (`_actions.ts` colocated with the route),
-  guarded by `requireAdmin()`. They invalidate cache tags via `updateTag(...)`.
+  guarded by `requireCapability(...)`. They return `ActionResult`
+  (`apps/admin/lib/action-result.ts`) instead of throwing — production hides
+  thrown messages — write an audit entry with `audit()` (`apps/admin/lib/audit.ts`;
+  the `audit_log` table is append-only via a DB trigger), and invalidate cache
+  tags via `updateTag(...)` (+ `revalidateWeb(...)` for public data).
 - **No barrel files inside packages** — they hurt tree-shaking. Expose subpath
   `exports` instead (`@repo/db/client`, `@repo/db/queries/items`).
 - **Avoid abbreviations** in public APIs (`organization`, not `org`).

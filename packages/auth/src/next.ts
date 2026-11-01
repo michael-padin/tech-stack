@@ -1,4 +1,5 @@
 import { headers as nextHeaders } from "next/headers";
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { toNextJsHandler } from "better-auth/next-js";
 
@@ -8,9 +9,9 @@ import { auth } from "./server";
 
 export const { GET, POST } = toNextJsHandler(auth);
 
-async function getServerSession() {
-  return auth.api.getSession({ headers: await nextHeaders() });
-}
+// cache() dedupes the lookup per request: the layout, the page and its
+// components can all gate without each paying a session query.
+const getServerSession = cache(async () => auth.api.getSession({ headers: await nextHeaders() }));
 
 // Better Auth's admin plugin attaches role/banned/banExpires to user; those
 // types aren't re-exported, so we narrow against the documented shape.
@@ -29,6 +30,22 @@ function isBanned(user: GuardedUser): boolean {
   }
   const expiresAt = user.banExpires ? new Date(user.banExpires) : null;
   return !expiresAt || expiresAt.getTime() > Date.now();
+}
+
+/**
+ * Gate on "signed in and not banned", whatever the role. Use it for surfaces
+ * every role may see (the dashboard shell, your own profile); gate resources
+ * with `requireCapability`.
+ */
+export async function requireSession() {
+  const session = await getServerSession();
+  if (!session) {
+    redirect("/sign-in");
+  }
+  if (isBanned(session.user as GuardedUser)) {
+    redirect("/forbidden");
+  }
+  return session;
 }
 
 /**

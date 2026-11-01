@@ -156,11 +156,16 @@ Mirror the `Item` example end to end:
 1. **Model** in `schema.prisma` + migration (above).
 2. **Queries** in `packages/db/src/queries/`.
 3. **Types** in `@repo/types` (`*InputSchema`, `*FilterSchema`).
-4. **Route** under `apps/admin/app/(dashboard)/<resource>/page.tsx`, calling
-   `requireAdmin()`.
-5. **Server Actions** in `<resource>/_actions.ts` — guard with `requireAdmin()`,
-   validate with the Zod schema, mutate via `@repo/db`, then `updateTag(...)`.
-6. **Nav** — append an entry to the `NAV` array in
+4. **Capabilities** — add `<resource>.read|create|update|delete` to `Capability`
+   and `ROLE_CAPABILITIES` in `packages/auth/src/permissions.ts`, and the
+   matching statement in `access-control.ts` (the parity test fails until both
+   agree).
+5. **Route** under `apps/admin/app/(dashboard)/<resource>/page.tsx`, calling
+   `requireCapability("<resource>.read")`.
+6. **Server Actions** in `<resource>/_actions.ts` — guard with
+   `requireCapability(...)`, validate with the Zod schema, mutate via `@repo/db`,
+   `audit(...)`, `updateTag(...)`, and return an `ActionResult`.
+7. **Nav** — append an entry (with its `capability`) to the `NAV` array in
    `apps/admin/components/sidebar-nav.tsx`.
 
 ## Adding a public page

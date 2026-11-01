@@ -59,14 +59,14 @@ export function InviteDialog() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     startTransition(async () => {
-      try {
-        const { tempPassword: pw } = await inviteUserAction({ email, name, role });
-        setTempPassword(pw);
-        toast.success("Account created.");
-        router.refresh();
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Invite failed");
+      const result = await inviteUserAction({ email, name, role });
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
       }
+      setTempPassword(result.data.tempPassword);
+      toast.success("Account created.");
+      router.refresh();
     });
   }
 

@@ -80,20 +80,21 @@ import { requireAdmin } from "@repo/auth/next";
 ## Server Actions (the write surface)
 
 Mutations are Server Actions, colocated with their route under
-`apps/admin/app/(dashboard)/`. Each guards with `requireAdmin()`, validates with
-a Zod schema from `@repo/types`, writes via `@repo/db`, and invalidates the
-relevant cache tag.
+`apps/admin/app/(dashboard)/`. Each guards with `requireCapability(...)`,
+validates with a Zod schema from `@repo/types`, writes via `@repo/db`, records an
+audit entry, invalidates the relevant cache tag, and returns an `ActionResult`
+(`{ ok: true, data } | { ok: false, error }`) rather than throwing.
 
 ### Items — `items/_actions.ts`
 
-| Action             | Signature                        | Notes                                                                                   |
-| ------------------ | -------------------------------- | --------------------------------------------------------------------------------------- |
-| `createItemAction` | `(input: ItemInput)`             | Validates `itemInputSchema`; sets owner to the current user; redirects to `/items/<id>` |
-| `updateItemAction` | `(id: string, input: ItemInput)` | Validates and updates                                                                   |
-| `deleteItemAction` | `(id: string)`                   | Soft delete (`deletedAt`); redirects to `/items`                                        |
+| Action             | Signature                        | Notes                                                                      |
+| ------------------ | -------------------------------- | -------------------------------------------------------------------------- |
+| `createItemAction` | `(input: ItemInput)`             | `items.create`; sets owner to the current user; redirects to `/items/<id>` |
+| `updateItemAction` | `(id: string, input: ItemInput)` | `items.update`; audits before/after                                        |
+| `deleteItemAction` | `(id: string)`                   | `items.delete`; soft delete (`deletedAt`); no redirect                     |
 
-All three invalidate `CACHE_TAGS.items` via `updateTag(...)` so the dashboard
-summary and list reads refresh.
+All three invalidate `CACHE_TAGS.items` via `updateTag(...)` and call
+`revalidateWeb(["public-items", "item:<id>"])` so the public site refreshes.
 
 `ItemInput` (`itemInputSchema`):
 
@@ -115,7 +116,7 @@ sessions.
 ## Reads (Server Components + the query layer)
 
 Public and admin pages read through the typed helpers in
-`packages/db/src/queries/` (re-exported from `@repo/db`):
+`packages/db/src/queries/` (imported as `@repo/db/queries/<file>`):
 
 - `listItems(filters)` / `getItemById(id)` — public reads (soft-deleted excluded)
 - `listItemsPaginated(filters, page)` — admin list (returns `Paginated<Item>`)
@@ -130,7 +131,7 @@ If you do need a real HTTP route (a webhook, an integration callback, a public
 JSON API), follow the existing patterns:
 
 - Validate input with a Zod schema; return `{ error, issues? }` on failure.
-- Gate protected routes with `requireAdmin()` (it redirects on failure).
+- Gate protected routes with `requireCapability(...)` (it redirects on failure).
 - Type any `$queryRaw` result with a row generic — never `any`.
 - Document the new endpoint here.
 

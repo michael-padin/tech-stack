@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 
 import { auth } from "@repo/auth/server";
-import { requireAdmin } from "@repo/auth/next";
+import { requireSession } from "@repo/auth/next";
 
 /**
  * Revoke one of the current user's own sessions by token. Used from the
@@ -12,7 +12,7 @@ import { requireAdmin } from "@repo/auth/next";
  * device without touching any others.
  */
 export async function revokeMySessionAction(token: string): Promise<void> {
-  await requireAdmin();
+  await requireSession();
   await auth.api.revokeSession({
     body: { token },
     headers: await headers(),

@@ -2,6 +2,8 @@ import { cache, Suspense } from "react";
 import Link from "next/link";
 import { ArrowRightIcon, PlusIcon } from "lucide-react";
 
+import { requireCapability } from "@repo/auth/next";
+import { hasPermission } from "@repo/auth/permissions";
 import { STATUS_DESCRIPTIONS, STATUS_LABELS, type ItemStatus } from "@repo/types";
 
 import { buttonVariants } from "@repo/ui/components/button";
@@ -19,7 +21,10 @@ const CARD_KEYS = ["c-1", "c-2", "c-3"] as const;
 // Dedupe within a single request render — headline + cards share one query.
 const getSummary = cache(() => getCachedAdminSummary());
 
-export default function AdminHome() {
+export default async function AdminHome() {
+  const session = await requireCapability("items.read");
+  const canCreate = hasPermission(session.user, "items.create");
+
   return (
     <>
       <header className="border-border/60 border-b">
@@ -30,9 +35,11 @@ export default function AdminHome() {
               <SummaryHeadline />
             </Suspense>
           </div>
-          <Link href="/items/new" className={buttonVariants({ size: "sm" })}>
-            <PlusIcon aria-hidden="true" /> New item
-          </Link>
+          {canCreate ? (
+            <Link href="/items/new" className={buttonVariants({ size: "sm" })}>
+              <PlusIcon aria-hidden="true" /> New item
+            </Link>
+          ) : null}
         </div>
       </header>
 

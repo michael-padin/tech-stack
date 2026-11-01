@@ -27,7 +27,15 @@ import { toast } from "@repo/ui/components/sonner";
 
 import { deleteItemAction } from "../_actions";
 
-export function ItemRowActions({ itemId, itemTitle }: { itemId: string; itemTitle: string }) {
+export function ItemRowActions({
+  itemId,
+  itemTitle,
+  canDelete,
+}: {
+  itemId: string;
+  itemTitle: string;
+  canDelete: boolean;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -64,10 +72,14 @@ export function ItemRowActions({ itemId, itemTitle }: { itemId: string; itemTitl
           <DropdownMenuItem render={<Link href={`/items/${itemId}`} />}>
             <PencilIcon size={14} aria-hidden="true" /> Edit
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={() => setConfirmDelete(true)}>
-            Delete
-          </DropdownMenuItem>
+          {canDelete ? (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={() => setConfirmDelete(true)}>
+                Delete
+              </DropdownMenuItem>
+            </>
+          ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
 

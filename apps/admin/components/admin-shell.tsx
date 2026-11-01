@@ -23,14 +23,17 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { PublicSiteLink } from "@/components/public-site-link";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { UserMenu } from "@/components/user-menu";
+import type { Capability } from "@repo/auth/permissions";
 
 type AdminShellProps = {
   children: React.ReactNode;
   user: { name: string; email: string; role: string };
+  /** What the signed-in role may do — drives which nav entries show. */
+  capabilities: readonly Capability[];
   defaultOpen: boolean;
 };
 
-export function AdminShell({ children, user, defaultOpen }: AdminShellProps) {
+export function AdminShell({ children, user, capabilities, defaultOpen }: AdminShellProps) {
   const initials =
     user.name
       .split(" ")
@@ -55,7 +58,7 @@ export function AdminShell({ children, user, defaultOpen }: AdminShellProps) {
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarNav />
+              <SidebarNav capabilities={capabilities} />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>

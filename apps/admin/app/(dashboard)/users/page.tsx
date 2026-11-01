@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { ShieldIcon } from "lucide-react";
 
 import { auth } from "@repo/auth/server";
-import { requireAdmin } from "@repo/auth/next";
+import { requireCapability } from "@repo/auth/next";
 
 import { Badge } from "@repo/ui/components/badge";
 import { Card } from "@repo/ui/components/card";
@@ -60,7 +60,7 @@ export default async function UsersPage({
 }
 
 async function UsersBody({ safePage, pageSize }: { safePage: number; pageSize: number }) {
-  const session = await requireAdmin();
+  const session = await requireCapability("users.manage");
   const result = await auth.api.listUsers({
     query: {
       limit: pageSize,

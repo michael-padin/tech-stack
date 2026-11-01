@@ -68,6 +68,15 @@ export function hasPermission(user: RoleUser | null | undefined, capability: Cap
   return ROLE_CAPABILITIES[role].includes(capability);
 }
 
+/** The user's role and every capability it grants (empty for an unknown role). */
+export function capabilitiesFor(user: RoleUser | null | undefined): {
+  role: AppRole | null;
+  list: readonly Capability[];
+} {
+  const role = parseRole(user?.role);
+  return { role, list: role ? ROLE_CAPABILITIES[role] : [] };
+}
+
 /** True when the user holds one of the allowed roles. */
 export function hasRole(user: RoleUser | null | undefined, ...roles: AppRole[]): boolean {
   const role = parseRole(user?.role);

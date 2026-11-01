@@ -24,7 +24,7 @@ model User {
   createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt     DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
   // Admin plugin fields
-  role          AppRole   @default(admin)
+  role          AppRole   @default(viewer)
   banned        Boolean   @default(false)
   banReason     String?   @map("ban_reason")
   banExpires    DateTime? @map("ban_expires") @db.Timestamp(6)

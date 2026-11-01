@@ -42,6 +42,8 @@ import {
 import { Label } from "@repo/ui/components/label";
 import { Textarea } from "@repo/ui/components/textarea";
 
+import type { ActionResult } from "@/lib/action-result";
+
 export function UserRowActions({
   userId,
   userEmail,
@@ -68,31 +70,31 @@ export function UserRowActions({
     };
   }, []);
 
-  function run(action: () => Promise<void>, success: string) {
+  function run(action: () => Promise<ActionResult>, success: string) {
     startTransition(async () => {
-      try {
-        await action();
-        toast.success(success);
-        router.refresh();
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Action failed");
+      const result = await action();
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
       }
+      toast.success(success);
+      router.refresh();
     });
   }
 
   function handleResetConfirm() {
     setConfirmReset(false);
     startTransition(async () => {
-      try {
-        const { tempPassword } = await resetUserPasswordAction(userId);
-        setResetResult(tempPassword);
-        setShowPassword(false);
-        setCopied(false);
-        toast.success("Password reset.");
-        router.refresh();
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Reset failed");
+      const result = await resetUserPasswordAction(userId);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
       }
+      setResetResult(result.data.tempPassword);
+      setShowPassword(false);
+      setCopied(false);
+      toast.success("Password reset.");
+      router.refresh();
     });
   }
 

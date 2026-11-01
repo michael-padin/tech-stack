@@ -1,4 +1,4 @@
-import { requireAdmin } from "@repo/auth/next";
+import { requireCapability } from "@repo/auth/next";
 
 import { createItemAction } from "../_actions";
 import { ItemForm } from "../_components/item-form";
@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default async function NewItemPage() {
-  await requireAdmin();
+  await requireCapability("items.create");
 
   return (
     <>

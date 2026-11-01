@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { requireAdmin } from "@repo/auth/next";
+import { requireCapability } from "@repo/auth/next";
+import { hasPermission } from "@repo/auth/permissions";
 import { getItemById } from "@repo/db/queries/items";
 
 import { StatusPill } from "@/components/status-pill";
@@ -14,7 +15,9 @@ export const metadata = {
 };
 
 export default async function EditItemPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin();
+  const session = await requireCapability("items.read");
+  const canUpdate = hasPermission(session.user, "items.update");
+  const canDelete = hasPermission(session.user, "items.delete");
   const { id } = await params;
   const item = await getItemById(id);
   if (!item) notFound();
@@ -29,7 +32,7 @@ export default async function EditItemPage({ params }: { params: Promise<{ id: s
             </h1>
             <StatusPill status={item.status} />
           </div>
-          <ItemDeleteButton itemId={item.id} itemTitle={item.title} />
+          {canDelete ? <ItemDeleteButton itemId={item.id} itemTitle={item.title} /> : null}
         </div>
       </header>
 
@@ -38,6 +41,7 @@ export default async function EditItemPage({ params }: { params: Promise<{ id: s
           item={item}
           onSubmit={updateItemAction.bind(null, item.id)}
           submitLabel="Save changes"
+          readOnly={!canUpdate}
         />
       </main>
     </>

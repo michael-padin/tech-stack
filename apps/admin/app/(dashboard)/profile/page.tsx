@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { requireAdmin } from "@repo/auth/next";
+import { requireSession } from "@repo/auth/next";
 
 import { ActiveSessionsCard, ActiveSessionsCardSkeleton } from "./_components/active-sessions-card";
 import { ProfileForm } from "./_components/profile-form";
@@ -10,12 +10,12 @@ export const metadata = {
 };
 
 export default async function ProfilePage() {
-  // requireAdmin gates the page. Its data is needed for the form below, so
+  // requireSession gates the page (every role has a profile). Its data is needed for the form below, so
   // it stays outside Suspense — the rest of the shell can't render anyway
   // until we know who's signed in. The session-list query DOES stream:
   // header + form render immediately, the active-sessions card flushes
   // in once Better Auth returns the list.
-  const session = await requireAdmin();
+  const session = await requireSession();
   const user = session.user;
 
   return (
