@@ -28,16 +28,20 @@ export const itemInputSchema = z.object({
 });
 
 // Filter/sort state — parsed from URL search params (see finder-state pattern).
+// Every field `.catch()`es to its default: a hand-edited or stale URL
+// (`?status=bogus`, `?search=a&search=b`) degrades to the default view instead
+// of throwing a 500.
 export const itemFilterSchema = z.object({
-  search: z.string().default(""),
-  status: itemStatusSchema.or(z.literal("all")).default("all"),
-  sort: z.enum(["recent", "title"]).default("recent"),
+  search: z.string().trim().default("").catch(""),
+  status: itemStatusSchema.or(z.literal("all")).default("all").catch("all"),
+  sort: z.enum(["recent", "title"]).default("recent").catch("recent"),
 });
 
-// Generic pagination query, reused across every admin list.
+// Generic pagination query, reused across every admin list. Same `.catch()`
+// rule as the filters: `?page=abc` or `?page=0` means page 1.
 export const pageQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+  page: z.coerce.number().int().min(1).default(1).catch(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20).catch(20),
 });
 
 // ── Audit log ───────────────────────────────────────────────────────────────

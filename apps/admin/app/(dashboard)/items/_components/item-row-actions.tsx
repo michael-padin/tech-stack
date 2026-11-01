@@ -35,17 +35,13 @@ export function ItemRowActions({ itemId, itemTitle }: { itemId: string; itemTitl
   function handleDelete() {
     setConfirmDelete(false);
     startTransition(async () => {
-      try {
-        await deleteItemAction(itemId);
-        toast.success("Item deleted.");
-        router.refresh();
-      } catch (error) {
-        // deleteItemAction redirects on success — let the signal propagate.
-        if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-          throw error;
-        }
-        toast.error(error instanceof Error ? error.message : "Couldn't delete item.");
+      const result = await deleteItemAction(itemId);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
       }
+      toast.success("Item deleted.");
+      router.refresh();
     });
   }
 

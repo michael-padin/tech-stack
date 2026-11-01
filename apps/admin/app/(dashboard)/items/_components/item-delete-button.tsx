@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Trash2Icon } from "lucide-react";
 import { useState, useTransition } from "react";
 
@@ -19,21 +20,20 @@ import { toast } from "@repo/ui/components/sonner";
 import { deleteItemAction } from "../_actions";
 
 export function ItemDeleteButton({ itemId, itemTitle }: { itemId: string; itemTitle: string }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
   function handleDelete() {
     setOpen(false);
     startTransition(async () => {
-      try {
-        await deleteItemAction(itemId);
-        // deleteItemAction redirects to /items on success.
-      } catch (error) {
-        if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-          throw error;
-        }
-        toast.error(error instanceof Error ? error.message : "Couldn't delete item.");
+      const result = await deleteItemAction(itemId);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
       }
+      toast.success("Item deleted.");
+      router.push("/items");
     });
   }
 

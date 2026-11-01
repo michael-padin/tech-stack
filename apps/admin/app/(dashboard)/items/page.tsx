@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { PackageIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { requireAdmin } from "@repo/auth/next";
@@ -18,7 +19,7 @@ import {
 import { Skeleton } from "@repo/ui/components/skeleton";
 
 import { ListPagination } from "@/components/list-pagination";
-import { resolvePageSize } from "@/components/pagination-helpers";
+import { DEFAULT_PAGE_SIZE, resolvePageSize } from "@/components/pagination-helpers";
 
 import { ItemsFilters } from "./_components/items-filters";
 import { ItemsTable } from "./_components/items-table";
@@ -90,6 +91,15 @@ async function ItemsBody({
   pageSize: number;
 }) {
   const result = await listItemsPaginated(filters, { page, pageSize });
+  // A stale or hand-edited ?page= past the end shows the last page instead of
+  // a misleading "No items yet".
+  if (result.rows.length === 0 && result.total > 0) {
+    const params = new URLSearchParams({ page: String(result.pageCount) });
+    if (filters.search) params.set("search", filters.search);
+    if (filters.status && filters.status !== "all") params.set("status", filters.status);
+    if (pageSize !== DEFAULT_PAGE_SIZE) params.set("per_page", String(pageSize));
+    redirect(`/items?${params.toString()}`);
+  }
   const isFiltered = Boolean(filters.search) || (filters.status && filters.status !== "all");
 
   if (result.rows.length === 0) {

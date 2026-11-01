@@ -54,16 +54,19 @@ function filterFallbackItems(filters?: Partial<ItemFilters>): Item[] {
   return rows;
 }
 
+// The public site only ever shows `active` items — drafts and archived items
+// are admin-only, whatever the URL asks for.
 export async function fetchItems(filters?: Partial<ItemFilters>): Promise<Item[]> {
+  const publicFilters = { ...filters, status: "active" as const };
   if (!isDbConfigured()) {
-    return filterFallbackItems(filters);
+    return filterFallbackItems(publicFilters);
   }
-  return cachedListItems(filters);
+  return cachedListItems(publicFilters);
 }
 
 export async function fetchItemById(id: string): Promise<Item | null> {
-  if (!isDbConfigured()) {
-    return fallbackItems().find((item) => item.id === id) ?? null;
-  }
-  return cachedGetItemById(id);
+  const item = isDbConfigured()
+    ? await cachedGetItemById(id)
+    : (fallbackItems().find((row) => row.id === id) ?? null);
+  return item?.status === "active" ? item : null;
 }

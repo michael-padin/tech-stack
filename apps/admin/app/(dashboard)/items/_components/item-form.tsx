@@ -35,6 +35,8 @@ import { NativeSelect, NativeSelectOption } from "@repo/ui/components/native-sel
 import { toast } from "@repo/ui/components/sonner";
 import { Textarea } from "@repo/ui/components/textarea";
 
+import type { ActionResult } from "@/lib/action-result";
+
 const STATUS_OPTIONS: ItemStatus[] = ["draft", "active", "archived"];
 
 type ItemFormProps = {
@@ -44,7 +46,7 @@ type ItemFormProps = {
    * Server action that persists the input. Create actions redirect on success;
    * update actions resolve to void and we refresh in place.
    */
-  onSubmit: (input: ItemInput) => Promise<void>;
+  onSubmit: (input: ItemInput) => Promise<ActionResult>;
   submitLabel: string;
 };
 
@@ -64,26 +66,21 @@ export function ItemForm({ item, onSubmit, submitLabel }: ItemFormProps) {
 
   function handleSubmit(values: ItemInput) {
     startTransition(async () => {
-      try {
-        await onSubmit({
-          title: values.title.trim(),
-          description: values.description?.trim() ? values.description.trim() : null,
-          status: values.status,
-        });
-        // Create actions redirect (this point isn't reached). Edit actions
-        // return void — surface success and pull in the fresh server data.
-        if (isEdit) {
-          toast.success("Item saved.");
-          form.reset(values);
-          router.refresh();
-        }
-      } catch (error) {
-        // Next's redirect() throws a control-flow signal — let it propagate so
-        // navigation still happens; only real failures are surfaced.
-        if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-          throw error;
-        }
-        toast.error(error instanceof Error ? error.message : "Couldn't save item.");
+      const result = await onSubmit({
+        title: values.title.trim(),
+        description: values.description?.trim() ? values.description.trim() : null,
+        status: values.status,
+      });
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      // A successful create redirects, so only edits reach this point —
+      // surface success and pull in the fresh server data.
+      if (isEdit) {
+        toast.success("Item saved.");
+        form.reset(values);
+        router.refresh();
       }
     });
   }

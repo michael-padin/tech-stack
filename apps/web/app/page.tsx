@@ -2,7 +2,8 @@ import Link from "next/link";
 import { format } from "date-fns";
 
 import { APP_NAME } from "@repo/env/client";
-import { itemFilterSchema, STATUS_LABELS, type Item, type ItemFilters } from "@repo/types";
+import { itemFilterSchema, type Item, type ItemFilters } from "@repo/types";
+import { Button } from "@repo/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/components/card";
 import {
   Empty,
@@ -18,13 +19,6 @@ import { NativeSelect, NativeSelectOption } from "@repo/ui/components/native-sel
 import { BrandMark } from "@/components/brand-mark";
 import { StatusBadge } from "@/components/status-badge";
 import { fetchItems } from "@/lib/db";
-
-const STATUS_OPTIONS: { value: ItemFilters["status"]; label: string }[] = [
-  { value: "all", label: "All statuses" },
-  { value: "active", label: STATUS_LABELS.active },
-  { value: "draft", label: STATUS_LABELS.draft },
-  { value: "archived", label: STATUS_LABELS.archived },
-];
 
 const SORT_OPTIONS: { value: ItemFilters["sort"]; label: string }[] = [
   { value: "recent", label: "Most recent" },
@@ -94,21 +88,6 @@ function FilterBar({ filters }: { filters: ItemFilters }) {
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="status">Status</Label>
-        <NativeSelect
-          id="status"
-          name="status"
-          defaultValue={filters.status}
-          className="w-full sm:w-44"
-        >
-          {STATUS_OPTIONS.map((option) => (
-            <NativeSelectOption key={option.value} value={option.value}>
-              {option.label}
-            </NativeSelectOption>
-          ))}
-        </NativeSelect>
-      </div>
-      <div className="space-y-1.5">
         <Label htmlFor="sort">Sort</Label>
         <NativeSelect id="sort" name="sort" defaultValue={filters.sort} className="w-full sm:w-44">
           {SORT_OPTIONS.map((option) => (
@@ -118,6 +97,7 @@ function FilterBar({ filters }: { filters: ItemFilters }) {
           ))}
         </NativeSelect>
       </div>
+      <Button type="submit">Apply</Button>
     </form>
   );
 }
@@ -157,7 +137,7 @@ function EmptyState() {
           <BrandMark className="text-muted-foreground size-4" />
         </EmptyMedia>
         <EmptyTitle>No items found</EmptyTitle>
-        <EmptyDescription>Try a different search or clear the status filter.</EmptyDescription>
+        <EmptyDescription>Try a different search.</EmptyDescription>
       </EmptyHeader>
     </Empty>
   );

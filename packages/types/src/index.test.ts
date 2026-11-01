@@ -71,9 +71,21 @@ describe("itemFilterSchema", () => {
     expect(filters.status).toBe("all");
   });
 
-  it("rejects an invalid sort value", () => {
-    const result = itemFilterSchema.safeParse({ sort: "oldest" });
-    expect(result.success).toBe(false);
+  // URL params are untrusted: bad values degrade to defaults, never throw.
+  it("falls back to defaults for invalid values", () => {
+    expect(itemFilterSchema.parse({ sort: "oldest", status: "bogus" })).toEqual({
+      search: "",
+      status: "all",
+      sort: "recent",
+    });
+  });
+
+  it("falls back when a param is repeated (array)", () => {
+    expect(itemFilterSchema.parse({ search: ["a", "b"] }).search).toBe("");
+  });
+
+  it("trims the search term", () => {
+    expect(itemFilterSchema.parse({ search: "  welcome " }).search).toBe("welcome");
   });
 });
 
@@ -88,19 +100,17 @@ describe("pageQuerySchema", () => {
     expect(query).toEqual({ page: 1, pageSize: 20 });
   });
 
-  it("rejects a page below 1", () => {
-    const result = pageQuerySchema.safeParse({ page: "0" });
-    expect(result.success).toBe(false);
+  it("falls back to page 1 below 1", () => {
+    expect(pageQuerySchema.parse({ page: "0" }).page).toBe(1);
   });
 
-  it("rejects a pageSize above 100", () => {
-    const result = pageQuerySchema.safeParse({ pageSize: "101" });
-    expect(result.success).toBe(false);
+  it("falls back to the default pageSize above 100", () => {
+    expect(pageQuerySchema.parse({ pageSize: "101" }).pageSize).toBe(20);
   });
 
-  it("rejects non-integer values", () => {
-    const result = pageQuerySchema.safeParse({ page: "1.5" });
-    expect(result.success).toBe(false);
+  it("falls back for non-integer and non-numeric values", () => {
+    expect(pageQuerySchema.parse({ page: "1.5" }).page).toBe(1);
+    expect(pageQuerySchema.parse({ page: "abc" }).page).toBe(1);
   });
 });
 

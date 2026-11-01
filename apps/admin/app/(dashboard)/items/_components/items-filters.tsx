@@ -68,7 +68,6 @@ export function ItemsFilters({
           className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2"
         />
         <Input
-          key={defaultSearch}
           id="items-search"
           type="search"
           placeholder="Search by title"

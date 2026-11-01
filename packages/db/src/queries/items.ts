@@ -38,8 +38,12 @@ function buildWhere(filters: Partial<ItemFilters>): Prisma.ItemWhereInput {
   };
 }
 
-function buildOrderBy(filters: Partial<ItemFilters>): Prisma.ItemOrderByWithRelationInput {
-  return filters.sort === "title" ? { title: "asc" } : { createdAt: "desc" };
+// `id` breaks ties so offset pages never repeat or skip rows that share a
+// timestamp or title.
+function buildOrderBy(filters: Partial<ItemFilters>): Prisma.ItemOrderByWithRelationInput[] {
+  return filters.sort === "title"
+    ? [{ title: "asc" }, { id: "asc" }]
+    : [{ createdAt: "desc" }, { id: "desc" }];
 }
 
 /** Public/list reads — soft-deleted rows are always excluded. */
@@ -98,9 +102,11 @@ export async function createItem(input: ItemInput, ownerId?: string): Promise<{ 
   return created;
 }
 
+// `deletedAt: null` in the where makes a soft-deleted item behave as missing
+// (Prisma throws P2025) instead of being silently edited or re-deleted.
 export async function updateItem(id: string, input: ItemInput): Promise<void> {
   await prisma.item.update({
-    where: { id },
+    where: { id, deletedAt: null },
     data: {
       title: input.title,
       description: input.description ?? null,
@@ -112,7 +118,7 @@ export async function updateItem(id: string, input: ItemInput): Promise<void> {
 /** Soft delete — preserves the row for audit/restore. */
 export async function softDeleteItem(id: string): Promise<void> {
   await prisma.item.update({
-    where: { id },
+    where: { id, deletedAt: null },
     data: { deletedAt: new Date() },
   });
 }
