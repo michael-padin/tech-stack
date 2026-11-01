@@ -9,7 +9,7 @@
 
 import { randomInt } from "node:crypto";
 
-import { prisma } from "@repo/db";
+import { prisma } from "@repo/db/client";
 
 import { auth } from "../src/server";
 

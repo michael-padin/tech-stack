@@ -21,45 +21,32 @@ apps/admin/
 └── ...
 ```
 
-## Routes (current vs planned)
+## Routes
 
-| Path         | Status               | Required role |
-| ------------ | -------------------- | ------------- |
-| `/`          | ✅ Built             | admin         |
-| `/sign-in`   | ✅ Built             | (anonymous)   |
-| `/forbidden` | ✅ Built             | (anonymous)   |
-| `/points`    | 🚧 Sidebar link only | admin         |
-| `/reports`   | 🚧 Sidebar link only | admin         |
-| `/areas`     | 🚧 Sidebar link only | admin         |
-| `/users`     | 🚧 Sidebar link only | admin         |
-
-The sidebar in `components/admin-shell.tsx` lists all of them; build out
-the page files as you implement each.
+| Path          | What it is                       | Required role |
+| ------------- | -------------------------------- | ------------- |
+| `/`           | Overview                         | admin         |
+| `/items`      | Item list, filters, pagination   | admin         |
+| `/items/new`  | Create an item                   | admin         |
+| `/items/[id]` | Edit / delete an item            | admin         |
+| `/users`      | Invite, ban, remove, reset users | admin         |
+| `/profile`    | Your account and sessions        | admin         |
+| `/help`       | How the dashboard works          | admin         |
+| `/sign-in`    | Email + password sign-in         | (anonymous)   |
+| `/forbidden`  | Shown when a gate rejects you    | (anonymous)   |
 
 ## Adding an admin route
 
 ```tsx
-// app/points/page.tsx
+// app/(dashboard)/widgets/page.tsx — the (dashboard) layout renders the shell
 import { requireAdmin } from "@repo/auth/next";
-import { getDb, listPublicPoints } from "@repo/db";
+import { listWidgets } from "@repo/db/queries/widgets";
 
-import { AdminShell } from "@/components/admin-shell";
+export default async function WidgetsPage() {
+  await requireAdmin();
+  const widgets = await listWidgets();
 
-export default async function PointsPage() {
-  const session = await requireAdmin();
-  const points = await listPublicPoints(getDb());
-
-  return (
-    <AdminShell
-      user={{
-        name: session.user.name,
-        email: session.user.email,
-        role: "admin",
-      }}
-    >
-      <div className="p-8">{/* page content */}</div>
-    </AdminShell>
-  );
+  return <main className="p-8">{/* page content */}</main>;
 }
 ```
 

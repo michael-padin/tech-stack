@@ -140,14 +140,14 @@ before merging. If a component is used in **both** apps, move it to
    pnpm db:generate
    ```
 
-3. Add typed query helpers in `packages/db/src/queries/` (export them from
-   `queries/index.ts`).
+3. Add typed query helpers in a new file, e.g. `packages/db/src/queries/widgets.ts`.
+   The `./queries/*` subpath export picks it up — no barrel file to update.
 
 4. Add matching Zod schemas/types to `@repo/types` if the shape crosses the
    server/client boundary.
 
-5. Use from either app via `import { listWidgets } from "@repo/db"` (or
-   `import { prisma } from "@repo/db"` for raw access).
+5. Use from either app via `import { listWidgets } from "@repo/db/queries/widgets"`
+   (or `import { prisma } from "@repo/db/client"` for raw access).
 
 ## Adding a new admin resource (CRUD)
 

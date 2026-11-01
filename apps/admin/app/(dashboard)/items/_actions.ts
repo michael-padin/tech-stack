@@ -4,7 +4,7 @@ import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireAdmin } from "@repo/auth/next";
-import { createItem, softDeleteItem, updateItem } from "@repo/db";
+import { createItem, softDeleteItem, updateItem } from "@repo/db/queries/items";
 import { itemInputSchema, type ItemInput } from "@repo/types";
 
 import { CACHE_TAGS } from "@/lib/cached-data";

@@ -67,6 +67,8 @@ admin comes from `pnpm auth:create-admin <email> "<name>"`). Unit tests run on V
 ## Architecture essentials
 
 **Dependency direction** is strict: `apps/*` → `packages/*`, never the reverse.
+Enforced by `pnpm boundaries` (`turbo boundaries`, run in CI): every app is
+tagged `app`, every package `package`, and nothing may depend on an `app`.
 Within packages, the rough order is `tsconfig` / `env` → `types` → `db` →
 `auth`; `ui`, `storage`, and `logger` are leaves. No circular deps.
 
@@ -175,7 +177,8 @@ files — reference `"catalog:"`.
   needed for interactivity.
 - **Mutations are Server Actions** (`_actions.ts` colocated with the route),
   guarded by `requireAdmin()`. They invalidate cache tags via `updateTag(...)`.
-- **No barrel files inside packages** — they hurt tree-shaking.
+- **No barrel files inside packages** — they hurt tree-shaking. Expose subpath
+  `exports` instead (`@repo/db/client`, `@repo/db/queries/items`).
 - **Avoid abbreviations** in public APIs (`organization`, not `org`).
 
 ## Commit conventions

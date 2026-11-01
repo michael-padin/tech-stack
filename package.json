@@ -6,6 +6,7 @@
   "scripts": {
     "auth:create-admin": "pnpm --filter @repo/auth create-admin",
     "auth:gen-schema": "pnpm --filter @repo/auth gen:schema",
+    "boundaries": "turbo boundaries",
     "build": "turbo run build",
     "clean": "rm -rf .turbo apps/*/.next apps/*/.turbo apps/*/tsconfig.tsbuildinfo packages/*/.turbo packages/*/dist packages/*/tsconfig.tsbuildinfo",
     "clean:deep": "pnpm clean && rm -rf node_modules apps/*/node_modules packages/*/node_modules",

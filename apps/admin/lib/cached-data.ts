@@ -1,6 +1,6 @@
 import { unstable_cache } from "next/cache";
 
-import { getAdminSummary as fetchAdminSummary } from "@repo/db";
+import { getAdminSummary as fetchAdminSummary } from "@repo/db/queries/summary";
 
 /**
  * Cache tags consumed by `updateTag(...)` in server actions. Add one tag per

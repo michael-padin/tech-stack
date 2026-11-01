@@ -3,7 +3,7 @@
 
 import { cacheLife, cacheTag } from "next/cache";
 
-import { getItemById, listItems } from "@repo/db";
+import { getItemById, listItems } from "@repo/db/queries/items";
 import { fallbackItems } from "@repo/db/seed-data";
 import type { Item, ItemFilters } from "@repo/types";
 

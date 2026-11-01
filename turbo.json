@@ -62,5 +62,19 @@
       "cache": false,
       "persistent": true
     }
+  },
+  "boundaries": {
+    "tags": {
+      "app": {
+        "dependencies": {
+          "deny": ["app"]
+        }
+      },
+      "package": {
+        "dependencies": {
+          "deny": ["app"]
+        }
+      }
+    }
   }
 }

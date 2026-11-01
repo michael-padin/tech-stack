@@ -29,3 +29,4 @@ if (env.NODE_ENV !== "production") {
 }
 
 export type Db = typeof prisma;
+export { Prisma } from "../generated/client";

@@ -124,7 +124,7 @@ For anything the typed Prisma API can't express, drop to raw SQL — but **alway
 type the result** with a row generic. Never use `any`:
 
 ```ts
-import { prisma } from "@repo/db";
+import { prisma } from "@repo/db/client";
 
 const rows = await prisma.$queryRaw<Array<{ status: string; count: number }>>`
   SELECT status, count(*)::int AS count
@@ -247,7 +247,7 @@ Typed query helpers live in `packages/db/src/queries/`. Add new ones there
 rather than putting raw SQL in route handlers or actions — both apps share them.
 
 ```ts
-import { listItems, getItemById, createItem } from "@repo/db";
+import { listItems, getItemById, createItem } from "@repo/db/queries/items";
 
 const items = await listItems({ status: "active", sort: "recent" });
 ```
@@ -275,7 +275,7 @@ Filters and pagination are typed by Zod schemas in `@repo/types`
 `@prisma/adapter-pg` against the connection string from `@repo/db/keys`:
 
 ```ts
-import { prisma } from "@repo/db";
+import { prisma } from "@repo/db/client";
 
 export async function GET() {
   const items = await prisma.item.findMany({ where: { deletedAt: null }, take: 10 });

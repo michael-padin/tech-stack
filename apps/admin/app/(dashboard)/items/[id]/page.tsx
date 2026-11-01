@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { requireAdmin } from "@repo/auth/next";
-import { getItemById } from "@repo/db";
+import { getItemById } from "@repo/db/queries/items";
 
 import { StatusPill } from "@/components/status-pill";
 

@@ -17,7 +17,7 @@ sessions across the two apps.
 ### `packages/auth/src/server.ts`
 
 ```ts
-import { prisma } from "@repo/db";
+import { prisma } from "@repo/db/client";
 import { APP_NAME } from "@repo/env/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";

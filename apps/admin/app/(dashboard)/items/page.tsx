@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PackageIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { requireAdmin } from "@repo/auth/next";
-import { listItemsPaginated } from "@repo/db";
+import { listItemsPaginated } from "@repo/db/queries/items";
 import { itemFilterSchema, pageQuerySchema, type ItemFilters } from "@repo/types";
 
 import { buttonVariants } from "@repo/ui/components/button";

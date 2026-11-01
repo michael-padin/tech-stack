@@ -1,6 +1,7 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "extends": ["//"],
+  "tags": ["package"],
   "tasks": {
     "build": {
       "inputs": ["prisma/schema.prisma", "prisma.config.ts"],
