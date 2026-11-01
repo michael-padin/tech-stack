@@ -129,18 +129,37 @@ advanced: {
 
 ### Vercel
 
-Each app is a separate Vercel project:
+Each app is a separate Vercel project, imported from the same repo
+([Vercel: Using monorepos](https://vercel.com/docs/monorepos)):
 
 ```
 Root directory:        apps/web    (or apps/admin)
 Framework preset:      Next.js
-Install command:       pnpm install --frozen-lockfile
-Build command:         cd ../.. && pnpm turbo run build --filter=@repo/web
-Output directory:      apps/web/.next
+Build command:         turbo run build
+Output directory:      (framework default)
 ```
 
-Use `--filter` so Turborepo only builds the changed app and its dependent
-packages.
+Vercel runs a global `turbo` and infers `--filter` from the root directory, so
+`turbo run build` builds only that app and the packages it depends on
+(`@repo/db`'s `build` generates the Prisma client on the way).
+
+**Skipping unaffected projects is automatic**: a push that touches only
+`apps/admin` doesn't build `apps/web`. It relies on each package having a
+unique `name` and declaring its workspace dependencies in `package.json` — both
+true here, and `pnpm boundaries` keeps the graph honest.
+
+**Optional: filtered installs.** To install only one app's dependency tree, set
+the project's install command to `pnpm install --filter @repo/web...` (or
+`@repo/admin...`).
+
+**Optional: Related Projects.** The admin app calls the web app's
+`/api/revalidate`, using `NEXT_PUBLIC_WEB_URL`. To point each admin _preview_
+at the matching web preview automatically, add the web project's ID to
+`apps/admin/vercel.json` (`{ "relatedProjects": ["prj_..."] }`), read it with
+`@vercel/related-projects`' `withRelatedProject({ projectName, defaultHost })`
+in `apps/admin/lib/revalidate-web.ts`, and add `VERCEL_RELATED_PROJECTS` to
+`turbo.json`'s `globalPassThroughEnv`
+([Vercel: Related Projects](https://vercel.com/docs/monorepos#how-to-link-projects-together-in-a-monorepo)).
 
 > Set `SKIP_ENV_VALIDATION=1` in the build environment so the Zod env schemas
 > don't fail the build when runtime secrets aren't injected at build time.
@@ -152,8 +171,10 @@ npx turbo login
 npx turbo link
 ```
 
-Or set `TURBO_TOKEN` and `TURBO_TEAM` as env vars. Subsequent builds re-use
-cached package outputs across CI runs.
+On Vercel, remote caching is on by default. For GitHub Actions, add
+`TURBO_TOKEN` (a Vercel access token) as a repository secret and `TURBO_TEAM`
+(your team slug) as a repository variable — `ci.yml` already passes both, and
+without them Turborepo just uses its local cache.
 
 ### Self-hosted
 

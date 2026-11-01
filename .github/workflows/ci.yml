@@ -17,6 +17,9 @@ jobs:
     # succeed. SKIP_ENV_VALIDATION bypasses the zod env checks; runtime secrets are
     # injected by the host (Vercel) per environment.
     env:
+      # Turborepo remote cache — no-op until the secret/variable are set.
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
       SKIP_ENV_VALIDATION: "1"
       BETTER_AUTH_SECRET: ci_build_dummy_secret_at_least_32_chars_long
       BETTER_AUTH_URL: http://localhost:3001
