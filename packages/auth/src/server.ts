@@ -1,5 +1,4 @@
 import { prisma } from "@repo/db";
-import { env } from "@repo/env/auth";
 import { APP_NAME } from "@repo/env/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
@@ -7,6 +6,9 @@ import { admin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 
 import { accessControl, accessControlRoles } from "./access-control";
+import { keys } from "./keys";
+
+const env = keys();
 
 export const auth = betterAuth({
   appName: APP_NAME,

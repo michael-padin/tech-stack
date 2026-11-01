@@ -18,7 +18,6 @@ sessions across the two apps.
 
 ```ts
 import { prisma } from "@repo/db";
-import { env } from "@repo/env/auth";
 import { APP_NAME } from "@repo/env/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
@@ -71,8 +70,8 @@ export const auth = betterAuth({
 > a user would lag from that user's point of view. It's left off until admin
 > mutations explicitly invalidate the cookie cache.
 
-Env values come from `@repo/env/auth` (server) and `@repo/env/client` (the
-`APP_NAME` display constant). Don't read `process.env.*` directly.
+Env values come from `@repo/auth/keys` (`const env = keys()` in `server.ts`)
+and `@repo/env/client` (the `APP_NAME` display constant). Don't read `process.env.*` directly.
 
 ### Required env vars
 

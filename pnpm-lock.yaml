@@ -124,6 +124,9 @@ importers:
       '@sentry/nextjs':
         specifier: ^11.10.0
         version: 11.10.0(next@16.4.3(@opentelemetry/api@1.9.1)(@playwright/test@1.61.0)(@types/node@24.12.4)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(vite@7.3.7(@types/node@24.12.4)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(tsx@4.21.0))(webpack@5.107.2(lightningcss@1.32.0))
+      '@t3-oss/env-nextjs':
+        specifier: ^0.13.0
+        version: 0.13.11(typescript@5.9.3)(valibot@1.4.2(typescript@5.9.3))(zod@4.6.7)
       better-auth:
         specifier: 'catalog:'
         version: 1.7.15(7dhlp5kx6rbhruvg55zlp6m3xy)
@@ -197,6 +200,9 @@ importers:
       '@sentry/nextjs':
         specifier: ^11.10.0
         version: 11.10.0(next@16.4.3(@opentelemetry/api@1.9.1)(@playwright/test@1.61.0)(@types/node@24.12.4)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(vite@7.3.7(@types/node@24.12.4)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0)(tsx@4.21.0))(webpack@5.107.2(lightningcss@1.32.0))
+      '@t3-oss/env-nextjs':
+        specifier: ^0.13.0
+        version: 0.13.11(typescript@5.9.3)(valibot@1.4.2(typescript@5.9.3))(zod@4.6.7)
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -255,9 +261,15 @@ importers:
       '@repo/types':
         specifier: workspace:*
         version: link:../types
+      '@t3-oss/env-core':
+        specifier: ^0.13.0
+        version: 0.13.11(typescript@5.9.3)(valibot@1.4.2(typescript@5.9.3))(zod@4.6.7)
       better-auth:
         specifier: 'catalog:'
         version: 1.7.15(7dhlp5kx6rbhruvg55zlp6m3xy)
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@repo/tsconfig':
         specifier: workspace:*
@@ -292,15 +304,18 @@ importers:
       '@prisma/client':
         specifier: ^7.10.1
         version: 7.10.1(prisma@7.10.1(@types/node@24.12.4)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(magicast@0.5.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(typescript@5.9.3)
-      '@repo/env':
-        specifier: workspace:*
-        version: link:../env
       '@repo/types':
         specifier: workspace:*
         version: link:../types
+      '@t3-oss/env-core':
+        specifier: ^0.13.0
+        version: 0.13.11(typescript@5.9.3)(valibot@1.4.2(typescript@5.9.3))(zod@4.6.7)
       pg:
         specifier: ^8.13.1
         version: 8.20.0
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@repo/tsconfig':
         specifier: workspace:*
@@ -370,9 +385,12 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.1042.0
         version: 3.1042.0
-      '@repo/env':
-        specifier: workspace:*
-        version: link:../env
+      '@t3-oss/env-core':
+        specifier: ^0.13.0
+        version: 0.13.11(typescript@5.9.3)(valibot@1.4.2(typescript@5.9.3))(zod@4.6.7)
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@repo/tsconfig':
         specifier: workspace:*

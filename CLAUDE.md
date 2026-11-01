@@ -123,18 +123,23 @@ for local UI only. No Redux / Zustand / React Query. When adding a new filter,
 update the relevant schema in `@repo/types` and the query builder in
 `packages/db/src/queries/`.
 
-**Env** — read via the per-concern modules under `@repo/env/*`:
-`@repo/env/db`, `@repo/env/auth`, `@repo/env/client` (the `NEXT_PUBLIC_*` one,
+**Env** — each package owns its schema in a `keys.ts` (`@repo/db/keys`,
+`@repo/auth/keys`, `@repo/storage/keys`), and each app's `env.ts`
+(`apps/<app>/env.ts`) composes the schemas of the packages it uses with
+`createEnv({ extends: [...] })` (the next-forge convention). App server code
+reads `import { env } from "@/env"`. Cross-app config stays in `@repo/env`:
+`@repo/env/client` (the `NEXT_PUBLIC_*` one,
 including `APP_ENV`/`NEXT_PUBLIC_APP_ENV` — the deployment marker that drives a
 non-production banner; unset = production), `@repo/env/features` (server-only
 feature flags, off by default — `getFeatureFlags()` reads them, and
 `requireFeature(flag)` from `apps/admin/lib/require-feature.ts` gates a route,
-redirecting to `/forbidden` like the other gates), `@repo/env/storage`,
+redirecting to `/forbidden` like the other gates), and
 `@repo/env/revalidate`. Never `process.env.X` directly in app code (the one
 sanctioned exception is `@repo/logger`, which reads `LOG_LEVEL`/`NODE_ENV`
 before any env module is loaded). Adding an env var — including a feature
 flag — requires updating: the `.env.example` files, `turbo.json`'s `build.env`
-array, and the matching Zod schema in `packages/env/src/`.
+array, the Zod schema in the owning package's `keys.ts` (or `packages/env/src/`
+for cross-app config), and the app `env.ts` if a new schema must be composed.
 
 **Env files are centralized at the repo root.** Root `.env.local` is shared by
 both apps and the Prisma CLI tooling. Each app's `dev` script loads

@@ -1,6 +1,9 @@
-import { env } from "@repo/env/db";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/client";
+
+import { keys } from "./keys";
+
+const env = keys();
 
 // node-postgres adapter — works with any standard Postgres (local Docker,
 // Neon, Supabase, RDS, Railway). For Neon's serverless WebSocket driver on

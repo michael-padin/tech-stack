@@ -3,8 +3,7 @@ import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { env } from "@repo/env/revalidate";
-
+import { env } from "@/env";
 import { PUBLIC_ITEMS_TAG } from "@/lib/db";
 
 const KNOWN_TAGS = [PUBLIC_ITEMS_TAG] as const;

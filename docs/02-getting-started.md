@@ -90,12 +90,13 @@ for local dev. (Staging/production DB commands read `.env.staging` /
 `.env.production` at the root instead — see
 [Database — stage-scoped commands](./03-database.md#stage-scoped-commands).)
 
-> Env values are read through `@repo/env/*` (`@t3-oss/env-core` +
-> `@t3-oss/env-nextjs`) and validated against a Zod schema at boot. The modules
-> are per-concern: `@repo/env/db`, `@repo/env/auth`, `@repo/env/client` (the
-> `NEXT_PUBLIC_*` one), `@repo/env/features` (server-only feature flags),
-> `@repo/env/storage`, `@repo/env/revalidate`. Don't read `process.env.*`
-> directly.
+> Env values are validated against Zod schemas (`@t3-oss/env-core` +
+> `@t3-oss/env-nextjs`). Each package owns its schema (`@repo/db/keys`,
+> `@repo/auth/keys`, `@repo/storage/keys`); each app's `env.ts` composes the
+> ones it uses and is loaded by `next.config.ts`, so a bad value fails the
+> build. Cross-app config lives in `@repo/env/client` (the `NEXT_PUBLIC_*` one),
+> `@repo/env/features` (server-only feature flags) and `@repo/env/revalidate`.
+> Don't read `process.env.*` directly.
 
 The full variable reference is the root [`.env.example`](../.env.example).
 

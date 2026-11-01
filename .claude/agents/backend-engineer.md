@@ -17,11 +17,13 @@ Non-negotiable conventions (from CLAUDE.md):
   session) or `/forbidden` (not admin / banned). `proxy.ts` is optimistic,
   cookie-only, and never the sole gate (post-CVE-2025-29927).
 - Only the admin app mounts `/api/auth/[...all]`.
-- DB-backed sessions (instant revoke). Better Auth 1.4 with the `admin` plugin.
-- **Env via the per-concern modules** (`@repo/env/auth`, `@repo/env/db`,
-  `@repo/env/client`, `@repo/env/revalidate`, …) — **never `process.env.X`**
-  in app code. Adding an env var means updating `.env.example`, `turbo.json`'s
-  `build.env`, and the matching Zod schema in `packages/env/src/`.
+- DB-backed sessions (instant revoke). Better Auth 1.7 with the `admin` plugin.
+- **Env**: packages own their schema in `keys.ts` (`@repo/db/keys`,
+  `@repo/auth/keys`, `@repo/storage/keys`); each app's `env.ts` composes them
+  and app server code reads `import { env } from "@/env"`. Cross-app config is
+  `@repo/env/client|features|revalidate`. **Never `process.env.X`** in app code.
+  Adding an env var means updating `.env.example`, `turbo.json`'s `build.env`,
+  and the schema in the owning package's `keys.ts`.
 - Admin mutations cross-revalidate the public app via the `/api/revalidate`
   route (`REVALIDATE_SECRET`).
 - **No `any`.** Validate inputs with the Zod schemas in `@repo/types`.

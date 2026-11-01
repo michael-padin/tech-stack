@@ -111,12 +111,14 @@ before merging. If a component is used in **both** apps, move it to
    with a comment.
 2. Add it to `turbo.json`'s `build.env` array so Turborepo invalidates cache on
    change.
-3. Declare it in the right `@repo/env` module under `packages/env/src/`:
-   `db.ts`, `auth.ts`, `client.ts` (for `NEXT_PUBLIC_*`), `storage.ts`, or
-   `revalidate.ts` — and add it to that module's `runtimeEnv` map. The Zod
-   schema there is the source of truth.
-4. Read it via `import { env } from "@repo/env/<module>"` — never
-   `process.env.X` directly.
+3. Declare it in the schema of the package that owns it: `packages/db/src/keys.ts`,
+   `packages/auth/src/keys.ts`, `packages/storage/src/keys.ts`, or — for
+   cross-app config — `packages/env/src/client.ts` (for `NEXT_PUBLIC_*`, also
+   add it to that module's `runtimeEnv` map), `features.ts` or `revalidate.ts`.
+   The Zod schema there is the source of truth. A new package with env gets
+   its own `keys.ts` and an entry in the `extends` list of each app's `env.ts`.
+4. Read it in app server code via `import { env } from "@/env"`; inside a
+   package, via `const env = keys()`. Never `process.env.X` directly.
 
 ## Adding a new database table
 

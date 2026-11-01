@@ -272,7 +272,7 @@ Filters and pagination are typed by Zod schemas in `@repo/types`
 ## Connection management
 
 `prisma` (exported from `@repo/db`) is a lazily-initialized singleton. It uses
-`@prisma/adapter-pg` against the connection string from `@repo/env/db`:
+`@prisma/adapter-pg` against the connection string from `@repo/db/keys`:
 
 ```ts
 import { prisma } from "@repo/db";

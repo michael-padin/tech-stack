@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-import { env as clientEnv } from "@repo/env/client";
+import { env } from "./env";
 
 // Baseline security headers. `frame-ancestors 'none'` blocks clickjacking; a
 // full script CSP needs per-request nonces, so add it per project if needed.
@@ -27,10 +27,9 @@ const nextConfig: NextConfig = {
       { protocol: "https" as const, hostname: "**.r2.dev" },
       { protocol: "https" as const, hostname: "**.r2.cloudflarestorage.com" },
       ...(() => {
-        const candidates = [
-          clientEnv.NEXT_PUBLIC_R2_PUBLIC_URL,
-          clientEnv.NEXT_PUBLIC_SITE_URL,
-        ].filter((value): value is string => Boolean(value));
+        const candidates = [env.NEXT_PUBLIC_R2_PUBLIC_URL, env.NEXT_PUBLIC_SITE_URL].filter(
+          (value): value is string => Boolean(value),
+        );
         return candidates.flatMap((value) => {
           try {
             return [

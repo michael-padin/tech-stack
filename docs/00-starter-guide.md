@@ -170,7 +170,7 @@ geo branch extends the same files the base template ships.
 The template is deliberately full-featured. Remove what doesn't apply:
 
 - **No file uploads?** Drop `@repo/storage` from the apps' dependencies, and delete the `R2_*` / `NEXT_PUBLIC_R2_PUBLIC_URL` env
-  vars from the examples and the `@repo/env/storage` schema.
+  vars from the examples `packages/storage/src/keys.ts`, and `storage()` from the admin app's `env.ts`.
 - **No error tracking?** Leave `NEXT_PUBLIC_SENTRY_DSN` unset — the
   instrumentation files no-op. Remove `@sentry/nextjs` only if you want a
   smaller install.

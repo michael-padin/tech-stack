@@ -10,7 +10,8 @@
     "./server": "./src/server.ts",
     "./client": "./src/client.ts",
     "./next": "./src/next.ts",
-    "./permissions": "./src/permissions.ts"
+    "./permissions": "./src/permissions.ts",
+    "./keys": "./src/keys.ts"
   },
   "scripts": {
     "create-admin": "dotenv -e ../../.env.local -- tsx scripts/create-admin.ts",
@@ -21,7 +22,9 @@
     "@repo/db": "workspace:*",
     "@repo/env": "workspace:*",
     "@repo/types": "workspace:*",
-    "better-auth": "catalog:"
+    "@t3-oss/env-core": "^0.13.0",
+    "better-auth": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@repo/tsconfig": "workspace:*",

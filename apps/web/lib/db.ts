@@ -5,8 +5,9 @@ import { cacheLife, cacheTag } from "next/cache";
 
 import { getItemById, listItems } from "@repo/db";
 import { fallbackItems } from "@repo/db/seed-data";
-import { env } from "@repo/env/db";
 import type { Item, ItemFilters } from "@repo/types";
+
+import { env } from "@/env";
 
 export function isDbConfigured(): boolean {
   return Boolean(env.DATABASE_URL);

@@ -1,7 +1,6 @@
 import { after } from "next/server";
 
-import { env as clientEnv } from "@repo/env/client";
-import { env as revalidateEnv } from "@repo/env/revalidate";
+import { env } from "@/env";
 
 // Must stay in sync with the tag constants in apps/web/lib/db.ts.
 // `item:<id>` matches publicItemTag() over there.
@@ -10,9 +9,9 @@ export type WebRevalidateTag = "public-items" | `item:${string}`;
 const REVALIDATE_TIMEOUT_MS = 5_000;
 
 export function revalidateWeb(tags: WebRevalidateTag[]): void {
-  const url = clientEnv.NEXT_PUBLIC_WEB_URL;
-  const secret = revalidateEnv.REVALIDATE_SECRET;
-  const isDev = process.env.NODE_ENV !== "production";
+  const url = env.NEXT_PUBLIC_WEB_URL;
+  const secret = env.REVALIDATE_SECRET;
+  const isDev = env.NODE_ENV !== "production";
 
   if (tags.length === 0) return;
 

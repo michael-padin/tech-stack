@@ -4,9 +4,6 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./db": "./src/db.ts",
-    "./auth": "./src/auth.ts",
-    "./storage": "./src/storage.ts",
     "./client": "./src/client.ts",
     "./features": "./src/features.ts",
     "./revalidate": "./src/revalidate.ts"

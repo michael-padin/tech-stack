@@ -51,7 +51,7 @@ Branch: `feat/short-description`, `fix/issue-summary`. Squash on merge. The
 - [ ] If you changed the schema, you regenerated the migration
       (`pnpm db:migrate:dev`) and committed the SQL
 - [ ] If you added a new env var, you updated `.env.example`, the Zod schema
-      in `packages/env/src/`, and `turbo.json`'s `env` array
+      in the owning package's `keys.ts` (or `packages/env/src/`), and `turbo.json`'s `env` array
 - [ ] If you added a public API endpoint, you documented it in
       [`docs/07-api-reference.md`](./docs/07-api-reference.md)
 - [ ] If you added a new admin-protected route, the actual `requireAdmin()`

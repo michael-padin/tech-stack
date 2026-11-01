@@ -17,8 +17,11 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { env } from "@repo/env/storage";
 import { randomUUID } from "node:crypto";
+
+import { keys } from "./keys";
+
+const env = keys();
 
 let cachedClient: S3Client | null = null;
 
