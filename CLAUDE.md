@@ -70,10 +70,12 @@ zero setup). Unit tests run on Vitest (`pnpm test`); e2e on Playwright (specs in
 Within packages, the rough order is `tsconfig` / `env` → `types` → `db` →
 `auth`; `ui`, `storage`, and `logger` are leaves. No circular deps.
 
-**Internal packages have no build step.** They're consumed as TypeScript source
-via Next.js `transpilePackages` in each app's `next.config.ts`. Edits in
-`packages/*` show up in apps without rebuilding. If you add a new package,
-register it in the consuming app's `transpilePackages` array.
+**Internal packages have no build step** ("Just-in-Time" packages in Turborepo
+terms). They're consumed as TypeScript source; Turbopack transpiles workspace
+packages automatically, so there is no `transpilePackages` list to maintain.
+Edits in `packages/*` show up in apps without rebuilding. The one exception is
+`@repo/db`, whose `build` script runs `prisma generate` so every app's `^build`
+produces the client (a root `postinstall` also generates it).
 
 **The public web app works without `DATABASE_URL`.** `apps/web/lib/db.ts` falls
 back to `@repo/db/seed-data` (the example dataset). This is intentional — a

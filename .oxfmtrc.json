@@ -3,5 +3,6 @@
   "sortTailwindcss": true,
   "sortPackageJson": {
     "sortScripts": true
-  }
+  },
+  "ignorePatterns": [".claude/**"]
 }

@@ -89,9 +89,9 @@ mkdir -p packages/new-pkg/src
 { "extends": "@repo/tsconfig/base.json", "include": ["src/**/*.ts"] }
 ```
 
-Then in the consuming app's `package.json` add `"@repo/new-pkg": "workspace:*"`,
-add it to the app's `transpilePackages` array in `next.config.ts`, and run
-`pnpm install`.
+Then in the consuming app's `package.json` add `"@repo/new-pkg": "workspace:*"`
+and run `pnpm install`. No `next.config.ts` change is needed — Turbopack
+transpiles workspace packages automatically.
 
 ## Adding a new shadcn component
 

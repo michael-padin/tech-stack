@@ -30,6 +30,7 @@
     "format:fix": "oxfmt .",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
+    "postinstall": "pnpm --filter @repo/db generate",
     "prepare": "lefthook install",
     "rename": "tsx scripts/rename-template.ts",
     "test": "vitest run",

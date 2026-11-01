@@ -4,14 +4,6 @@ import { env as clientEnv } from "@repo/env/client";
 import { env as storageEnv } from "@repo/env/storage";
 
 const nextConfig: NextConfig = {
-  transpilePackages: [
-    "@repo/ui",
-    "@repo/auth",
-    "@repo/db",
-    "@repo/storage",
-    "@repo/types",
-    "@repo/logger",
-  ],
   experimental: {
     optimizePackageImports: ["lucide-react", "@repo/ui"],
     // Extend the client-side router cache so back/forward and same-page

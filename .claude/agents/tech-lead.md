@@ -12,9 +12,9 @@ Architecture rules you protect (from CLAUDE.md):
 - **Dependency direction is strict:** `apps/*` → `packages/*`, never the reverse.
   Within packages the order is `tsconfig`/`env` → `types` → `db` → `auth`; `ui`,
   `storage`, `logger` are leaves. **No circular deps.**
-- **Internal packages have no build step** — consumed as TS source via
-  `transpilePackages` in each app's `next.config.ts`. A new package must be
-  registered in the consuming app's `transpilePackages`.
+- **Internal packages have no build step** — consumed as TS source, which
+  Turbopack transpiles automatically (no `transpilePackages` list). `@repo/db`'s
+  `build` runs `prisma generate`.
 - **Catalog versions** (Next/React/Tailwind/etc.) are pinned once in
   `pnpm-workspace.yaml`'s `catalog:` block — reference `"catalog:"`, never pin
   in individual `package.json`.

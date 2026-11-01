@@ -87,11 +87,11 @@ Env values come from `@repo/env/auth` (server) and `@repo/env/client` (the
 There are three roles: **`admin`**, **`editor`**, and **`viewer`** (the
 `app_role` Postgres enum, mirrored as `appRoleSchema` in `@repo/types`).
 
-| Role     | Capabilities                                                  |
-| -------- | ------------------------------------------------------------ |
-| `admin`  | Full access — items, users, settings, audit log              |
-| `editor` | Read + create/update/delete items                            |
-| `viewer` | Read-only (items)                                            |
+| Role     | Capabilities                                    |
+| -------- | ----------------------------------------------- |
+| `admin`  | Full access — items, users, settings, audit log |
+| `editor` | Read + create/update/delete items               |
+| `viewer` | Read-only (items)                               |
 
 `defaultRole` is **still `admin`** so a fresh clone bootstraps with zero setup —
 the first sign-up is an admin. **Real projects should lower this** to `"viewer"`
@@ -104,10 +104,10 @@ Two layers, kept in lockstep:
 
 - **App-facing capabilities** — `packages/auth/src/permissions.ts` defines a
   `Capability` union (`items.read`, `items.update`, `users.manage`, `audit.read`,
-  …) and a `ROLE_CAPABILITIES` map. Route/action guards check a *capability*, not
+  …) and a `ROLE_CAPABILITIES` map. Route/action guards check a _capability_, not
   a role name, so adding a role later is a data change here, not a sweep through
   call sites. Helpers: `hasPermission(user, capability)`, `hasRole(user,
-  ...roles)`, `hasAtLeastRole(user, minimumRole)` (rank-based).
+...roles)`, `hasAtLeastRole(user, minimumRole)` (rank-based).
 - **Better Auth access control** — `packages/auth/src/access-control.ts` mirrors
   the roles into Better Auth's own access-control system (`createAccessControl`),
   so the admin plugin API and `auth.api.userHasPermission(...)` understand them.

@@ -10,7 +10,8 @@
     "./seed-data": "./src/seed/example-data.ts"
   },
   "scripts": {
-    "generate": "pnpm with-env prisma generate",
+    "build": "prisma generate",
+    "generate": "prisma generate",
     "migrate": "pnpm with-env prisma migrate deploy",
     "migrate:dev": "pnpm with-env prisma migrate dev",
     "migrate:prod": "pnpm with-env:prod prisma migrate deploy",

@@ -17,7 +17,7 @@ pre-commit:
     # Format staged files with oxfmt (NOT prettier). Writing the files in place
     # plus stage_fixed makes formatting auto-apply to the commit.
     - name: oxfmt
-      glob: "*.{ts,tsx,js,jsx,cjs,mjs,json,css}"
+      glob: "*.{ts,tsx,js,jsx,cjs,mjs,json,css,md,yml,yaml}"
       run: pnpm oxfmt {staged_files}
       stage_fixed: true
 

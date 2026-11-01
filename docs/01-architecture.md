@@ -171,8 +171,9 @@ cover the data flow.
 3. Builds `@repo/web` and `@repo/admin`
 
 Internal packages **don't have a `build` step** — they're consumed as
-TypeScript source via Next.js's `transpilePackages`. Edits in `packages/*` show
-up in apps without a rebuild.
+TypeScript source, which Turbopack transpiles automatically for workspace
+packages. Edits in `packages/*` show up in apps without a rebuild. `@repo/db` is
+the exception: its `build` script runs `prisma generate`.
 
 ## Why these technologies?
 

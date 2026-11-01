@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 import { env as clientEnv } from "@repo/env/client";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@repo/ui", "@repo/db", "@repo/types", "@repo/storage", "@repo/logger"],
   cacheComponents: true,
   experimental: {
     optimizePackageImports: ["lucide-react", "date-fns", "@repo/ui"],

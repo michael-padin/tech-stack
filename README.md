@@ -99,9 +99,9 @@ order is `tsconfig` / `env` → `types` → `db` → `auth`; `ui`, `storage`, an
 `logger` are leaves. No circular dependencies.
 
 Internal packages have **no build step** — they're consumed as TypeScript
-source via Next.js `transpilePackages`. Edits in `packages/*` show up in apps
-without rebuilding. If you add a package, register it in each consuming app's
-`transpilePackages` array in `next.config.ts`.
+source, which Turbopack transpiles automatically for workspace packages. Edits
+in `packages/*` show up in apps without rebuilding. `@repo/db` is the exception:
+its `build` script runs `prisma generate`.
 
 ## The example domain
 

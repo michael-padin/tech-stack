@@ -24,12 +24,12 @@ conventions, migrations, and seeding.
 
 Everything lives in `packages/db/prisma/schema.prisma`, grouped with comments:
 
-| Section       | Models                                       | Purpose                                           |
-| ------------- | -------------------------------------------- | ------------------------------------------------- |
+| Section       | Models                                       | Purpose                                                 |
+| ------------- | -------------------------------------------- | ------------------------------------------------------- |
 | Enums         | `item_status`, `app_role`                    | Postgres enums (`app_role` = `admin`/`editor`/`viewer`) |
-| Better Auth   | `user`, `session`, `account`, `verification` | Better Auth tables — keep verbatim                |
-| Example model | `items` (`Item`)                             | The generic CRUD resource — replace with your own |
-| Audit         | `audit_log` (`AuditLog`)                     | Append-only record of who did what                |
+| Better Auth   | `user`, `session`, `account`, `verification` | Better Auth tables — keep verbatim                      |
+| Example model | `items` (`Item`)                             | The generic CRUD resource — replace with your own       |
+| Audit         | `audit_log` (`AuditLog`)                     | Append-only record of who did what                      |
 
 The Prisma client is generated to `packages/db/generated/` (not `node_modules`),
 configured via `generator client { output = "../generated" }`.

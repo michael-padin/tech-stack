@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "dotenv -e .env.local -e ../../.env.local -- next build",
     "dev": "dotenv -e .env.local -e ../../.env.local -- next dev --port 3000",
-    "start": "next start --port 3000",
+    "start": "dotenv -e .env.local -e ../../.env.local -- next start --port 3000",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

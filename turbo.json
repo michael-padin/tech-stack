@@ -1,6 +1,9 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
+  "cacheMaxSize": "2GB",
+  "cacheMaxAge": "7d",
+  "globalDependencies": [".env.local"],
   "globalPassThroughEnv": [
     "CI",
     "VERCEL",
@@ -12,8 +15,8 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "^generate"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**", "dist/**", "generated/**"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "env": [
         "DATABASE_URL",
@@ -34,22 +37,20 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": ["^build"]
     },
     "transit": {
       "dependsOn": ["^transit"]
     },
     "typecheck": {
-      "dependsOn": ["transit", "^generate"],
+      "dependsOn": ["transit", "^build"],
       "inputs": ["$TURBO_DEFAULT$", "tsconfig*.json"],
       "outputs": ["*.tsbuildinfo"]
     },
     "test": {
       "dependsOn": ["transit"],
       "outputs": []
-    },
-    "generate": {
-      "cache": false
     },
     "migrate": {
       "cache": false

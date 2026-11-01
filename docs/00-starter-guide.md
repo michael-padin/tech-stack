@@ -34,8 +34,7 @@ There are three things to make yours:
 
 ### Renaming the scope (`@repo` → `@yourscope`)
 
-The scope appears in package names, internal imports, `transpilePackages`
-arrays, `exports` maps, and a few config files. Do a workspace-wide
+The scope appears in package names, internal imports, `exports` maps, and a few config files. Do a workspace-wide
 find-and-replace of the literal string `@repo` with your scope, then reinstall:
 
 ```bash
@@ -170,8 +169,7 @@ geo branch extends the same files the base template ships.
 
 The template is deliberately full-featured. Remove what doesn't apply:
 
-- **No file uploads?** Drop `@repo/storage` from the apps' dependencies and
-  `transpilePackages`, and delete the `R2_*` / `NEXT_PUBLIC_R2_PUBLIC_URL` env
+- **No file uploads?** Drop `@repo/storage` from the apps' dependencies, and delete the `R2_*` / `NEXT_PUBLIC_R2_PUBLIC_URL` env
   vars from the examples and the `@repo/env/storage` schema.
 - **No error tracking?** Leave `NEXT_PUBLIC_SENTRY_DSN` unset — the
   instrumentation files no-op. Remove `@sentry/nextjs` only if you want a
