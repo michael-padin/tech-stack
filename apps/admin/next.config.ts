@@ -3,7 +3,20 @@ import type { NextConfig } from "next";
 import { env as clientEnv } from "@repo/env/client";
 import { env as storageEnv } from "@repo/env/storage";
 
+// Baseline security headers. `frame-ancestors 'none'` blocks clickjacking; a
+// full script CSP needs per-request nonces, so add it per project if needed.
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+];
+
 const nextConfig: NextConfig = {
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
   experimental: {
     optimizePackageImports: ["lucide-react", "@repo/ui"],
     // Extend the client-side router cache so back/forward and same-page
@@ -20,8 +33,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https" as const, hostname: "**.r2.dev" },
       { protocol: "https" as const, hostname: "**.r2.cloudflarestorage.com" },
-      { protocol: "https" as const, hostname: "mf.michaelpadin.com" },
-      { protocol: "https" as const, hostname: "**.michaelpadin.com" },
       ...(() => {
         const candidates = [
           storageEnv.R2_PUBLIC_URL,

@@ -4,6 +4,7 @@
   "private": true,
   "description": "Internal-tools starter — Turborepo + Next.js 16 + Better Auth + Prisma/Postgres, with a public app and an admin dashboard.",
   "scripts": {
+    "auth:create-admin": "pnpm --filter @repo/auth create-admin",
     "auth:gen-schema": "pnpm --filter @repo/auth gen:schema",
     "build": "turbo run build",
     "clean": "rm -rf .turbo apps/*/.next apps/*/.turbo apps/*/tsconfig.tsbuildinfo packages/*/.turbo packages/*/dist packages/*/tsconfig.tsbuildinfo",
@@ -39,20 +40,34 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.0.2",
-    "@commitlint/config-conventional": "^21.0.2",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@playwright/test": "^1.51.1",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/coverage-v8": "^4.1.12",
     "lefthook": "^2.1.9",
-    "oxfmt": "^0.47.0",
-    "oxlint": "^1.0.0",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
     "tsx": "^4.19.2",
     "turbo": "^2.9.7",
     "typescript": "^5.7.0",
-    "vitest": "^3.2.4"
+    "vite": "^7.3.7",
+    "vitest": "^4.1.12"
   },
   "engines": {
     "node": ">=24.0.0"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.0",
+  "pnpm": {
+    "overrides": {
+      "shell-quote@<1.9.0": "^1.9.0",
+      "brace-expansion@>=5.0.0 <5.0.12": "^5.0.12",
+      "fast-uri@>=3.0.0 <3.1.7": "^3.1.7",
+      "browserslist@<4.28.7": "^4.28.7",
+      "source-map-js@<1.2.2": "^1.2.2",
+      "postcss@<8.5.18": "^8.5.18",
+      "nanoid@>=3.0.0 <3.3.18": "^3.3.18",
+      "js-yaml@>=4.0.0 <4.3.2": "^4.3.2",
+      "ip-address@<10.3.1": "^10.3.1"
+    }
+  }
 }

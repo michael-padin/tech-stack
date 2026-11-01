@@ -96,4 +96,3 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Dependency audit (high+)
         run: pnpm audit --audit-level=high
-        continue-on-error: true

@@ -66,10 +66,10 @@ export default async function AdminPage() {
 
 ## Roles
 
-This template uses a single role: `admin`. Better Auth's `admin` plugin
-is loaded with `defaultRole: "admin"` and `adminRoles: ["admin"]`, so
-new accounts are admins by default and the admin API endpoints work
-out of the box. `requireAdmin()` redirects to `/sign-in` (no session)
+Roles are `admin | editor | viewer` (see `src/permissions.ts`). Better
+Auth's `admin` plugin is loaded with `defaultRole: "viewer"` and
+`adminRoles: ["admin"]`. Public sign-up is disabled; the first admin comes
+from `pnpm auth:create-admin <email> "<name>"`. `requireAdmin()` redirects to `/sign-in` (no session)
 or `/forbidden` (signed in but role isn't `admin`).
 
 ## Adding a new auth method

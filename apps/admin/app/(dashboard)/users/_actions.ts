@@ -6,10 +6,12 @@ import { z } from "zod";
 
 import { auth } from "@repo/auth/server";
 import { requireAdmin } from "@repo/auth/next";
+import { appRoleSchema } from "@repo/types";
 
 const inviteSchema = z.object({
   email: z.string().email("Invalid email"),
   name: z.string().trim().min(1, "Name required"),
+  role: appRoleSchema,
 });
 
 export async function inviteUserAction(input: z.input<typeof inviteSchema>) {
@@ -24,7 +26,7 @@ export async function inviteUserAction(input: z.input<typeof inviteSchema>) {
       email: parsed.email,
       name: parsed.name,
       password: tempPassword,
-      role: "admin",
+      role: parsed.role,
     },
     headers: await headers(),
   });

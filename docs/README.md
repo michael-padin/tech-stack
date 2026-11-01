@@ -12,7 +12,7 @@ It ships:
   (`@repo/admin`) — sharing data via `@repo/db` and identity via `@repo/auth`.
 - **A generic example domain** — an `Item` resource (status, owner, soft-delete)
   that demonstrates the full CRUD path so you can swap in your own model.
-- **Batteries included** — typed env, Better Auth (single admin role), Prisma +
+- **Batteries included** — typed env, Better Auth (admin / editor / viewer), Prisma +
   Postgres, a shadcn design system on tokens, Vitest + Playwright, lint/format/
   commit hooks, structured logging, and optional Sentry + object storage.
 

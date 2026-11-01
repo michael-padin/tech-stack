@@ -30,10 +30,18 @@ export default function AdminSignInPage() {
   );
 }
 
+// Only same-origin paths: "/items" is fine, "//evil.com" and "https://…" are not.
+function safeRedirect(value: string | null): string {
+  if (!value || !value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) {
+    return "/";
+  }
+  return value;
+}
+
 function SignInForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const redirectTo = params.get("redirect") ?? "/";
+  const redirectTo = safeRedirect(params.get("redirect"));
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -146,9 +154,9 @@ function SignInForm() {
                 </InputGroupAddon>
               </InputGroup>
               {capsLock ? (
-                <p id="caps-lock-hint" className="text-muted-foreground text-xs" role="status">
+                <output id="caps-lock-hint" className="text-muted-foreground block text-xs">
                   Caps Lock is on.
-                </p>
+                </output>
               ) : null}
             </div>
 

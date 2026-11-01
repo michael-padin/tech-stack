@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -17,14 +18,20 @@ const bodySchema = z.object({
     .min(1),
 });
 
+// Constant-time comparison so response timing doesn't leak the secret.
+function isAuthorized(header: string | null, secret: string): boolean {
+  const expected = Buffer.from(`Bearer ${secret}`);
+  const actual = Buffer.from(header ?? "");
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+
 export async function POST(request: Request) {
   const secret = env.REVALIDATE_SECRET;
   if (!secret) {
     return NextResponse.json({ error: "Revalidation is not configured" }, { status: 500 });
   }
 
-  const auth = request.headers.get("authorization");
-  if (auth !== `Bearer ${secret}`) {
+  if (!isAuthorized(request.headers.get("authorization"), secret)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

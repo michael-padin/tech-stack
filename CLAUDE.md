@@ -60,8 +60,8 @@ pnpm turbo run build --filter=@repo/web    # one app + its deps
 ```
 
 Node ≥ 24, pnpm 9.15. Roles are `admin | editor | viewer` (capability map in
-`@repo/auth`; `defaultRole` is still `admin` so a fresh clone bootstraps with
-zero setup). Unit tests run on Vitest (`pnpm test`); e2e on Playwright (specs in
+`@repo/auth`; public sign-up is off, `defaultRole` is `viewer`, and the first
+admin comes from `pnpm auth:create-admin <email> "<name>"`). Unit tests run on Vitest (`pnpm test`); e2e on Playwright (specs in
 `e2e/`).
 
 ## Architecture essentials
@@ -89,9 +89,10 @@ management (`/users`) and profile (`/profile`). Better Auth tables
 (user/session/account/verification) are kept verbatim — they're the contract
 Better Auth's Prisma adapter expects.
 
-**Auth model** — Better Auth 1.4 with the `admin` plugin. Roles are
-`admin | editor | viewer` (`defaultRole: "admin"` so a fresh clone bootstraps
-with zero setup; real projects should lower it). DB-backed sessions (instant
+**Auth model** — Better Auth 1.7 with the `admin` plugin. Roles are
+`admin | editor | viewer`. Public sign-up is disabled (email and Google);
+accounts come from the `/users` invite flow (which picks a role) or, for the
+first admin, `pnpm auth:create-admin`. `defaultRole` is `viewer`. DB-backed sessions (instant
 revoke, no JWT staleness), email/password + optional Google OAuth, Prisma
 adapter.
 

@@ -17,8 +17,11 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
 
+  // No public sign-up: accounts are created by an admin (the /users invite
+  // flow) or, for the very first admin, by `pnpm auth:create-admin`.
   emailAndPassword: {
     enabled: true,
+    disableSignUp: true,
     requireEmailVerification: false,
     minPasswordLength: 8,
   },
@@ -29,6 +32,8 @@ export const auth = betterAuth({
           google: {
             clientId: env.GOOGLE_CLIENT_ID,
             clientSecret: env.GOOGLE_CLIENT_SECRET,
+            // Google can sign in existing accounts but never create new ones.
+            disableImplicitSignUp: true,
           },
         }
       : undefined,
@@ -54,21 +59,19 @@ export const auth = betterAuth({
     max: 30,
   },
 
-  // Better Auth's experimental joins flag fuses session+user reads into a
-  // single query — important on Neon serverless where every round-trip is
-  // a separate WebSocket exchange. Revisit when better-auth marks it stable.
-  experimental: { joins: true },
+  // Database joins fuse session+user reads into a single query — important on
+  // Neon serverless where every round-trip is a separate WebSocket exchange.
+  advanced: { database: { joins: true } },
 
   plugins: [
     // Multi-role RBAC. `roles` lists every assignable role; `adminRoles` is the
     // subset granted access to the admin plugin's API (`/api/auth/admin/*`).
     //
-    // `defaultRole` stays `admin` so a fresh clone bootstraps with zero setup —
-    // the first sign-up is an admin. Real projects should lower this to
-    // `"viewer"` (or `"editor"`) and promote the first admin by hand (see
+    // `defaultRole` is the least-privileged role; invites pick a role
+    // explicitly, and the first admin comes from `pnpm auth:create-admin` (see
     // docs/04-authentication.md → "Bootstrapping the first admin").
     admin({
-      defaultRole: "admin",
+      defaultRole: "viewer",
       // `ac` + `roles` teach the admin plugin our `admin | editor | viewer`
       // access-control roles (defined in ./access-control). `adminRoles` is the
       // subset granted access to the admin API (`/api/auth/admin/*`).

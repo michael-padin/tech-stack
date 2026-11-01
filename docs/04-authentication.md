@@ -1,6 +1,6 @@
 # Authentication
 
-The template uses **Better Auth 1.4** with the Prisma adapter and the `admin`
+The template uses **Better Auth 1.7** with the Prisma adapter and the `admin`
 plugin. This document covers the config, roles, protecting routes, and sharing
 sessions across the two apps.
 
@@ -34,6 +34,7 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    disableSignUp: true, // accounts come from invites or `pnpm auth:create-admin`
     requireEmailVerification: false, // no email provider wired by default
     minPasswordLength: 8,
   },
@@ -51,11 +52,11 @@ export const auth = betterAuth({
   },
 
   rateLimit: { enabled: true, window: 60, max: 30 }, // brute-force protection
-  experimental: { joins: true }, // fuse session+user reads
+  advanced: { database: { joins: true } }, // fuse session+user reads
 
   plugins: [
     admin({
-      defaultRole: "admin",
+      defaultRole: "viewer",
       ac: accessControl, // from ./access-control — teaches the plugin our roles
       roles: accessControlRoles, // { admin, editor, viewer }
       adminRoles: ["admin"], // only `admin` gets the admin API
@@ -93,10 +94,9 @@ There are three roles: **`admin`**, **`editor`**, and **`viewer`** (the
 | `editor` | Read + create/update/delete items               |
 | `viewer` | Read-only (items)                               |
 
-`defaultRole` is **still `admin`** so a fresh clone bootstraps with zero setup —
-the first sign-up is an admin. **Real projects should lower this** to `"viewer"`
-(or `"editor"`) in `packages/auth/src/server.ts` and promote the first admin by
-hand (see [Bootstrapping the first admin](#bootstrapping-the-first-admin)).
+`defaultRole` is `viewer` and public sign-up is disabled (`disableSignUp` for
+email, `disableImplicitSignUp` for Google), so nobody can register their way in.
+See [Bootstrapping the first admin](#bootstrapping-the-first-admin).
 
 ### The permission model
 
@@ -107,7 +107,7 @@ Two layers, kept in lockstep:
   …) and a `ROLE_CAPABILITIES` map. Route/action guards check a _capability_, not
   a role name, so adding a role later is a data change here, not a sweep through
   call sites. Helpers: `hasPermission(user, capability)`, `hasRole(user,
-...roles)`, `hasAtLeastRole(user, minimumRole)` (rank-based).
+  ...roles)`, `hasAtLeastRole(user, minimumRole)` (rank-based).
 - **Better Auth access control** — `packages/auth/src/access-control.ts` mirrors
   the roles into Better Auth's own access-control system (`createAccessControl`),
   so the admin plugin API and `auth.api.userHasPermission(...)` understand them.
@@ -118,16 +118,19 @@ the single source of truth for role UI copy.
 
 ### Bootstrapping the first admin
 
-Just sign up at `/sign-in` → "Create one". To promote an existing account by
-hand:
+Public sign-up is disabled, so create the first admin from the CLI (it prints
+a temporary password; re-running it on an existing email promotes that account):
 
-```sql
-UPDATE "user" SET role = 'admin' WHERE email = 'you@example.com';
+```bash
+pnpm auth:create-admin you@example.com "Your Name"
 ```
 
-After that, admins invite others through the `/users` page — invites always
-create another admin (with a temporary password the inviter shares manually;
-no email provider is wired by default).
+It reads `DATABASE_URL` and `BETTER_AUTH_*` from the root `.env.local`; export
+the staging/production values in your shell to bootstrap a deployed database.
+
+After that, admins invite others through the `/users` page and pick each
+account's role (with a temporary password the inviter shares manually; no email
+provider is wired by default).
 
 ## Protecting routes
 

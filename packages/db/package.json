@@ -30,8 +30,8 @@
     "with-env:staging": "dotenv -e ../../.env.staging --"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
     "@repo/env": "workspace:*",
     "@repo/types": "workspace:*",
     "pg": "^8.13.1"
@@ -41,7 +41,7 @@
     "@types/node": "catalog:",
     "@types/pg": "^8.11.10",
     "dotenv-cli": "^11.0.0",
-    "prisma": "^7.8.0",
+    "prisma": "^7.10.1",
     "tsx": "^4.19.2",
     "typescript": "catalog:"
   }

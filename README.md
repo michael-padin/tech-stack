@@ -5,7 +5,7 @@ small dashboards. Two apps — a public read surface and an admin dashboard — 
 on top of a set of shared packages (auth, db, ui, env, types, storage, logger).
 
 It ships an opinionated baseline so you can skip the boring parts: typed env,
-Better Auth with a single admin role, Prisma + Postgres with a soft-deleting
+Better Auth with `admin | editor | viewer` roles, Prisma + Postgres with a soft-deleting
 example resource, a shadcn design system on design tokens, Vitest + Playwright,
 lint/format/commit hooks, and Docker for local Postgres.
 
@@ -21,7 +21,7 @@ lint/format/commit hooks, and Docker for local Postgres.
 | ---------- | ----------------------------------------------------- | ------------------------------------------------------------------------------ |
 | Monorepo   | **Turborepo** + pnpm workspaces                       | Cached builds, internal `workspace:*` deps, no package build step              |
 | Framework  | Next.js 16 (App Router, Server Components) + React 19 | `proxy.ts` replaces `middleware.ts` (post-CVE-2025-29927)                      |
-| Auth       | **Better Auth 1.4** + `admin` plugin                  | Prisma adapter, DB sessions (instant revoke), email/password + optional Google |
+| Auth       | **Better Auth 1.7** + `admin` plugin                  | Prisma adapter, DB sessions (instant revoke), email/password + optional Google |
 | Database   | **Postgres** via **Prisma 7** + `@prisma/adapter-pg`  | Works with Docker / Neon / Supabase / RDS. PostGIS lives on `feat/geo`.        |
 | Validation | **Zod** + `@t3-oss/env-*`                             | One schema is the source of truth for env and domain types                     |
 | Styling    | **Tailwind CSS 4** + `@repo/ui` design tokens         | oklch palette, shadcn components rewritten to semantic tokens                  |
@@ -70,9 +70,14 @@ with zero setup. The admin dashboard and any real DB query need `DATABASE_URL`.
 
 ### First admin user
 
-New sign-ups default to the `admin` role (Better Auth `defaultRole`), so the
-only manual step is the first sign-up itself: open
-http://localhost:3001/sign-in, click "Create one", and you're an admin.
+Public sign-up is disabled, so create the first admin from the CLI (it prints
+a temporary password; re-running it on an existing email promotes that account):
+
+```bash
+pnpm auth:create-admin you@example.com "Your Name"
+```
+
+Then sign in at http://localhost:3001/sign-in.
 
 ## Monorepo layout
 

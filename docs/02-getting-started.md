@@ -129,12 +129,14 @@ Open:
 
 ## 6. Create your first admin user
 
-The admin dashboard requires the `admin` role. New sign-ups default to `admin`
-(Better Auth `defaultRole`), so the only manual step is the first sign-up:
+The admin dashboard requires the `admin` role. Public sign-up is disabled, so create the first admin from the CLI (it prints
+a temporary password; re-running it on an existing email promotes that account):
 
+```bash
+pnpm auth:create-admin you@example.com "Your Name"
 ```
-Open http://localhost:3001/sign-in → "Create one" → done. You're an admin.
-```
+
+Then sign in at http://localhost:3001/sign-in.
 
 If you ever need to promote an account by hand:
 

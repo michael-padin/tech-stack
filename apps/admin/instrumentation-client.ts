@@ -18,6 +18,6 @@ if (dsn) {
   });
 }
 
-// To instrument client-side navigations for tracing, also export
-// `onRouterTransitionStart = Sentry.captureRouterTransitionStart` here once your
-// installed @sentry/nextjs version exposes it (Next 16 client tracing API).
+// Traces client-side navigations; a no-op when Sentry was never initialized.
+// oxlint-disable-next-line import/namespace -- exported from the browser entry; oxlint resolves the server one
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

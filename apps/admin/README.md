@@ -82,9 +82,8 @@ Open http://localhost:3001 — you'll be redirected to `/sign-in`.
 
 ## First admin
 
-```sql
--- After signing up at /sign-in (Create one):
-UPDATE "user" SET role = 'admin' WHERE email = 'you@example.com';
+```bash
+pnpm auth:create-admin you@example.com "Your Name"
 ```
 
-Sign out and back in. The dashboard now loads.
+Sign in with the printed temporary password. The dashboard now loads.

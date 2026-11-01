@@ -143,10 +143,11 @@ function InvitesBody() {
     <div className="space-y-3 text-sm leading-relaxed">
       <p className="text-muted-foreground">
         Go to <strong className="text-foreground">Admins</strong> →{" "}
-        <strong className="text-foreground">Invite teammate</strong>. Enter their email and name.
+        <strong className="text-foreground">Invite teammate</strong>. Enter their email and name,
+        and pick a role.
       </p>
       <p className="text-muted-foreground">
-        Every account is granted full admin access — {APP_NAME} uses a single admin role. We
+        Admins can do everything, editors can change items, and viewers can only look. We
         don&rsquo;t send a welcome email yet: copy the temporary password we generate and hand it to
         the new teammate yourself. They can change it after sign-in.
       </p>

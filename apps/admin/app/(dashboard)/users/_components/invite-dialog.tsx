@@ -5,7 +5,7 @@ import { CheckIcon, CopyIcon, MailIcon, PlusIcon } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "@repo/ui/components/sonner";
 
-import { APP_NAME } from "@repo/env/client";
+import { ROLE_DESCRIPTIONS, ROLE_LABELS, appRoleSchema, type AppRole } from "@repo/types";
 
 import { inviteUserAction } from "../_actions";
 import { Button } from "@repo/ui/components/button";
@@ -20,6 +20,7 @@ import {
 } from "@repo/ui/components/dialog";
 import { Input } from "@repo/ui/components/input";
 import { Label } from "@repo/ui/components/label";
+import { NativeSelect, NativeSelectOption } from "@repo/ui/components/native-select";
 
 export function InviteDialog() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export function InviteDialog() {
   const [pending, startTransition] = useTransition();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [role, setRole] = useState<AppRole>("viewer");
   const [tempPassword, setTempPassword] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -44,6 +46,7 @@ export function InviteDialog() {
   function reset() {
     setEmail("");
     setName("");
+    setRole("viewer");
     setTempPassword(null);
     setCopied(false);
     setShowPassword(false);
@@ -57,7 +60,7 @@ export function InviteDialog() {
     e.preventDefault();
     startTransition(async () => {
       try {
-        const { tempPassword: pw } = await inviteUserAction({ email, name });
+        const { tempPassword: pw } = await inviteUserAction({ email, name, role });
         setTempPassword(pw);
         toast.success("Account created.");
         router.refresh();
@@ -163,9 +166,24 @@ export function InviteDialog() {
                 placeholder="e.g. Maria Cruz"
               />
             </div>
-            <p className="text-muted-foreground text-xs">
-              The new account is granted full admin access — {APP_NAME} uses a single admin role.
-            </p>
+            <div className="grid gap-1.5">
+              <Label htmlFor="invite-role">Role</Label>
+              <NativeSelect
+                id="invite-role"
+                value={role}
+                onChange={(e) => setRole(appRoleSchema.parse(e.target.value))}
+                aria-describedby="invite-role-description"
+              >
+                {appRoleSchema.options.map((option) => (
+                  <NativeSelectOption key={option} value={option}>
+                    {ROLE_LABELS[option]}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+              <p id="invite-role-description" className="text-muted-foreground text-xs">
+                {ROLE_DESCRIPTIONS[role]}
+              </p>
+            </div>
             <DialogFooter className="mt-2">
               <Button type="submit" disabled={pending}>
                 {pending ? "Creating…" : "Create account"}
