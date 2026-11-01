@@ -34,16 +34,16 @@
     "@prisma/client": "^7.10.1",
     "@repo/types": "workspace:*",
     "@t3-oss/env-core": "^0.13.0",
-    "pg": "^8.13.1",
+    "pg": "^8.22.0",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@repo/tsconfig": "workspace:*",
     "@types/node": "catalog:",
-    "@types/pg": "^8.11.10",
+    "@types/pg": "^8.20.3",
     "dotenv-cli": "^11.0.0",
     "prisma": "^7.10.1",
-    "tsx": "^4.19.2",
+    "tsx": "^4.23.1",
     "typescript": "catalog:",
     "vitest": "^4.1.12"
   }
