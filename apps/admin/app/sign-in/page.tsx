@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useState, type FormEvent, type KeyboardEvent } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
@@ -39,7 +39,6 @@ function safeRedirect(value: string | null): string {
 }
 
 function SignInForm() {
-  const router = useRouter();
   const params = useSearchParams();
   const redirectTo = safeRedirect(params.get("redirect"));
 
@@ -66,8 +65,10 @@ function SignInForm() {
       );
       return;
     }
-    router.push(redirectTo);
-    router.refresh();
+    // Full navigation, not router.push: the client router may hold a prefetched
+    // (signed-out) response for the target — a redirect back here — and replay
+    // it. A document load renders the target fresh with the new session cookie.
+    window.location.assign(redirectTo);
   }
 
   function handleCapsLock(e: KeyboardEvent<HTMLInputElement>) {
