@@ -48,18 +48,17 @@ pnpm-debug.log*
 .mcp.json
 *.pen
 *.claude
-# Track committed agent skills under .claude/skills/ (carried by the template);
-# other .claude/ contents (e.g. settings.local.json) stay local.
+# Agent skills are committed: real files in .agents/skills/ (managed by the
+# `skills` CLI, pinned in skills-lock.json) and the symlinks to them in
+# .claude/skills/. Other .claude/ contents (e.g. settings.local.json) stay local.
 !.claude/
 .claude/*
 !.claude/skills/
-!.claude/agents/
 *.devcontainer
 .impeccable.md
 
 # Vercel
 .vercel
-.agents
 
 # Prisma 7 generated client (regenerate with `pnpm db:generate`)
 packages/db/generated/
@@ -74,5 +73,4 @@ proposal.txt
 PROPOSAL.txt
 *.scratch.*
 .playwright-mcp/
-skills-lock.json
 *.pdf

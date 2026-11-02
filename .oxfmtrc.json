@@ -4,5 +4,5 @@
   "sortPackageJson": {
     "sortScripts": true
   },
-  "ignorePatterns": [".claude/**"]
+  "ignorePatterns": [".claude/**", ".agents/**"]
 }

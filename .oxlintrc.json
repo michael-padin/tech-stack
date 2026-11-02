@@ -25,12 +25,22 @@
     }
   },
   "rules": {
-    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-console": [
+      "error",
+      {
+        "allow": ["warn", "error"]
+      }
+    ],
     "no-unused-vars": "off",
     "no-shadow": "off",
     "no-underscore-dangle": "off",
     "no-await-in-loop": "off",
-    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "import/no-unassigned-import": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-no-constructed-context-values": "warn",
@@ -73,6 +83,7 @@
     "**/prisma/migrations/**",
     "**/.claude/**",
     "**/generated/**",
-    "**/_legacy/**"
+    "**/_legacy/**",
+    "**/.agents/**"
   ]
 }
