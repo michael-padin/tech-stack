@@ -46,12 +46,19 @@ function buildOrderBy(filters: Partial<ItemFilters>): Prisma.ItemOrderByWithRela
     : [{ createdAt: "desc" }, { id: "desc" }];
 }
 
-/** Public/list reads — soft-deleted rows are always excluded. */
-export async function listItems(filters: Partial<ItemFilters> = {}): Promise<Item[]> {
+/** Upper bound for unpaginated list reads, so one cache entry can't grow without limit. */
+export const LIST_ITEMS_LIMIT = 100;
+
+/** Public/list reads — soft-deleted rows are always excluded, at most `limit` rows. */
+export async function listItems(
+  filters: Partial<ItemFilters> = {},
+  limit = LIST_ITEMS_LIMIT,
+): Promise<Item[]> {
   const rows = await prisma.item.findMany({
     where: buildWhere(filters),
     orderBy: buildOrderBy(filters),
     select: itemSelect,
+    take: limit,
   });
   return rows.map(serialize);
 }

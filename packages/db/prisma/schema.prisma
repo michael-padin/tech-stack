@@ -107,9 +107,13 @@ model Item {
 
   owner User? @relation("items_owner", fields: [ownerId], references: [id], onDelete: SetNull)
 
-  @@index([status], map: "idx_items_status")
+  // Lists filter on status and sort newest-first; the composite serves both
+  // (and status-only lookups via its prefix). Title search is ILIKE '%term%',
+  // which only a pg_trgm GIN index can use — the migration creates the extension.
+  @@index([status, createdAt], map: "idx_items_status_created")
+  @@index([createdAt], map: "idx_items_created")
   @@index([ownerId], map: "idx_items_owner")
-  @@index([deletedAt], map: "idx_items_deleted")
+  @@index([title(ops: raw("gin_trgm_ops"))], type: Gin, map: "idx_items_title_trgm")
   @@map("items")
 }
 
@@ -158,6 +162,7 @@ model AuditLog {
 
   @@index([entity, entityId], map: "idx_audit_entity")
   @@index([createdAt], map: "idx_audit_created")
+  @@index([action, createdAt], map: "idx_audit_action_created")
   @@index([actorId], map: "idx_audit_actor")
   @@map("audit_log")
 }

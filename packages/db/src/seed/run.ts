@@ -10,7 +10,9 @@ function isLocalDatabase(): boolean {
 }
 
 // Idempotent, re-runnable seed. There's no natural unique key on Item, so we
-// find-or-update by title — re-running never duplicates rows.
+// find-or-update by title — re-running never duplicates rows. Soft-deleted rows
+// count as existing (and stay deleted), so deleting a seed item and re-seeding
+// doesn't bring back a copy.
 async function main() {
   if (!isLocalDatabase() && process.env.SEED_ALLOW_REMOTE !== "true") {
     throw new Error(
@@ -23,7 +25,7 @@ async function main() {
 
   for (const item of exampleItems) {
     const existing = await prisma.item.findFirst({
-      where: { title: item.title, deletedAt: null },
+      where: { title: item.title },
       select: { id: true },
     });
 

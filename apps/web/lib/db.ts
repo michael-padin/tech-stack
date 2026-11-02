@@ -3,7 +3,7 @@
 
 import { cacheLife, cacheTag } from "next/cache";
 
-import { getItemById, listItems } from "@repo/db/queries/items";
+import { LIST_ITEMS_LIMIT, getItemById, listItems } from "@repo/db/queries/items";
 import { fallbackItems } from "@repo/db/seed-data";
 import type { Item, ItemFilters } from "@repo/types";
 
@@ -51,7 +51,7 @@ function filterFallbackItems(filters?: Partial<ItemFilters>): Item[] {
     sort === "title" ? a.title.localeCompare(b.title) : b.createdAt.localeCompare(a.createdAt),
   );
 
-  return rows;
+  return rows.slice(0, LIST_ITEMS_LIMIT);
 }
 
 // The public site only ever shows `active` items — drafts and archived items
