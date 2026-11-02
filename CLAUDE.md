@@ -188,6 +188,23 @@ files — reference `"catalog:"`.
   `exports` instead (`@repo/db/client`, `@repo/db/queries/items`).
 - **Avoid abbreviations** in public APIs (`organization`, not `org`).
 
+## Agent skills and subagents
+
+Project skills are committed under `.claude/skills/` and pinned in
+`skills-lock.json` (managed with Vercel's `skills` CLI): Better Auth, Turborepo,
+Next.js Cache Components adoption, Prisma 7 CLI + Client API, shadcn, Vercel
+React best practices, Web Interface Guidelines, impeccable, TDD, diagnose and a
+few planning skills. Next.js reference knowledge is not a skill anymore — it
+ships as `next/dist/docs/` plus the `AGENTS.md` that `next dev` writes.
+
+`npx skills update -p -y` rewrites skills as symlinks into `.agents/`, which is
+gitignored — clones would get broken links. After updating, reinstall each
+changed skill as a copy: `npx skills add <source> --skill <name> --agent
+claude-code --copy -y` (sources are in `skills-lock.json`).
+
+The only project subagent is `security-auditor` (`.claude/agents/`): run auth,
+RBAC, audit-log and PII-sensitive changes past it.
+
 ## Commit conventions
 
 `feat: | fix: | refactor: | chore: | docs: | style: | test:`. Enforced by

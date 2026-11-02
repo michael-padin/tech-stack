@@ -11,7 +11,9 @@ pre-commit:
     # then stage_fixed re-stages the changes so the commit includes them.
     - name: oxlint
       glob: "*.{ts,tsx,js,jsx,cjs,mjs}"
-      run: pnpm oxlint --fix {staged_files}
+      # --no-error-on-unmatched-pattern: a commit whose only JS/TS files are
+      # lint-ignored (e.g. vendored .claude/skills scripts) must not fail.
+      run: pnpm oxlint --fix --no-error-on-unmatched-pattern {staged_files}
       stage_fixed: true
 
     # Format staged files with oxfmt (NOT prettier). Writing the files in place
