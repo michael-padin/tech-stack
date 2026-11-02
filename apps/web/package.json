@@ -9,11 +9,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.6.0",
     "@repo/db": "workspace:*",
     "@repo/env": "workspace:*",
-    "@repo/logger": "workspace:*",
-    "@repo/storage": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/ui": "workspace:*",
     "@sentry/nextjs": "^11.10.0",
@@ -23,7 +20,6 @@
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-hook-form": "^7.84.0",
     "zod": "catalog:"
   },
   "devDependencies": {
