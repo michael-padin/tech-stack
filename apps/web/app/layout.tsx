@@ -5,6 +5,8 @@ import { APP_NAME } from "@repo/env/client";
 import { Toaster } from "@repo/ui/components/sonner";
 import { ThemeProvider } from "@repo/ui/components/theme-provider";
 
+import { siteUrl } from "@/lib/site-url";
+
 import "./globals.css";
 
 const fontSans = IBM_Plex_Sans({
@@ -24,6 +26,9 @@ const fontMono = IBM_Plex_Mono({
 const description = `Browse and manage records in ${APP_NAME}.`;
 
 export const metadata: Metadata = {
+  // Absolute base for OG/canonical URLs; without it they'd resolve against
+  // localhost when self-hosted.
+  metadataBase: new URL(siteUrl()),
   title: {
     default: APP_NAME,
     template: `%s · ${APP_NAME}`,

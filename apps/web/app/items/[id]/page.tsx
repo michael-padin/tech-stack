@@ -16,7 +16,14 @@ type PageProps = { params: Promise<{ id: string }> };
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const item = await fetchItemById(id);
-  return { title: item?.title ?? APP_NAME };
+  if (!item) return { title: APP_NAME };
+  const description = item.description ?? `${item.title} on ${APP_NAME}.`;
+  return {
+    title: item.title,
+    description,
+    alternates: { canonical: `/items/${item.id}` },
+    openGraph: { type: "article", title: item.title, description },
+  };
 }
 
 export default async function ItemPage({ params }: PageProps) {

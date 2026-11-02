@@ -46,3 +46,15 @@ test("changing sort submits the filter form", async ({ page }) => {
 
   await expect(page).toHaveURL(/sort=title/);
 });
+
+test("robots.txt and sitemap.xml are served", async ({ request }) => {
+  const robots = await request.get("/robots.txt");
+  expect(robots.ok()).toBeTruthy();
+  expect(await robots.text()).toContain("Sitemap:");
+
+  const sitemap = await request.get("/sitemap.xml");
+  expect(sitemap.ok()).toBeTruthy();
+  const xml = await sitemap.text();
+  expect(xml).toContain("/items/example-1"); // the active seed item
+  expect(xml).not.toContain("/items/example-2"); // the draft
+});
