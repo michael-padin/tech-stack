@@ -118,7 +118,7 @@ function ItemCard({ item }: { item: Item }) {
               {item.description}
             </p>
           ) : (
-            <p className="text-muted-foreground/60 text-sm italic">No description.</p>
+            <p className="text-muted-foreground text-sm italic">No description.</p>
           )}
           <p className="text-muted-foreground mt-auto pt-4 font-mono text-xs tabular-nums">
             Updated {format(new Date(item.updatedAt), "MMM d, yyyy")}

@@ -83,12 +83,16 @@ export function ListPagination({
   ) : null;
 
   // Nothing to paginate — just show a result count so the list still has
-  // a footer summary.
+  // a footer summary. The page-size picker stays while the result count could
+  // still span pages at a smaller size, so a larger choice can be undone.
   if (pageCount <= 1) {
     return (
-      <p className="text-muted-foreground mt-4 text-xs tabular-nums">
-        {totalCount === 0 ? "No results" : `${totalCount} result${totalCount === 1 ? "" : "s"}`}
-      </p>
+      <div className="text-muted-foreground mt-4 flex items-center gap-3 text-xs tabular-nums">
+        <p>
+          {totalCount === 0 ? "No results" : `${totalCount} result${totalCount === 1 ? "" : "s"}`}
+        </p>
+        {totalCount > Math.min(...PAGE_SIZE_OPTIONS) ? pageSizeControl : null}
+      </div>
     );
   }
 
@@ -115,6 +119,8 @@ export function ListPagination({
           <PaginationItem>
             <PaginationPrevious
               href={prevHref}
+              aria-disabled={prevDisabled || undefined}
+              tabIndex={prevDisabled ? -1 : undefined}
               className={prevDisabled ? "pointer-events-none opacity-50" : undefined}
             />
           </PaginationItem>
@@ -138,6 +144,8 @@ export function ListPagination({
           <PaginationItem>
             <PaginationNext
               href={nextHref}
+              aria-disabled={nextDisabled || undefined}
+              tabIndex={nextDisabled ? -1 : undefined}
               className={nextDisabled ? "pointer-events-none opacity-50" : undefined}
             />
           </PaginationItem>

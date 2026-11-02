@@ -105,7 +105,8 @@
 
   --status-success: oklch(0.48 0.16 145);
   --status-success-soft: oklch(0.96 0.05 145);
-  --status-warning: oklch(0.62 0.15 70);
+  /* L 0.52 keeps text on --status-warning-soft at 4.97:1 (WCAG AA); 0.62 was 3.3:1. */
+  --status-warning: oklch(0.52 0.13 70);
   --status-warning-soft: oklch(0.96 0.05 80);
   --status-muted: oklch(0.42 0.008 250);
   --status-muted-soft: oklch(0.95 0.005 250);

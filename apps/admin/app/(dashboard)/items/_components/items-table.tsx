@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import type { Item } from "@repo/types";
@@ -60,7 +61,17 @@ export function ItemsTable({ items, canDelete }: { items: Item[]; canDelete: boo
                 className="cursor-pointer"
                 onClick={() => router.push(`/items/${item.id}`)}
               >
-                <TableCell className="font-medium">{item.title}</TableCell>
+                <TableCell className="font-medium">
+                  {/* The row is clickable for pointer users; the link makes it
+                      reachable by keyboard and screen readers. */}
+                  <Link
+                    href={`/items/${item.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="focus-visible:ring-ring rounded-sm hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                  >
+                    {item.title}
+                  </Link>
+                </TableCell>
                 <TableCell>
                   <StatusPill status={item.status} />
                 </TableCell>
