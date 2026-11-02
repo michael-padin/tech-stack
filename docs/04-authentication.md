@@ -314,8 +314,10 @@ call Better Auth's admin API:
 - `resetUserPasswordAction` — `setUserPassword` + `revokeUserSessions`
 
 Each guards with `requireCapability("users.manage")`, validates its input with
-Zod, refuses to ban or remove your own account or the last active admin, and
-writes an audit entry. The profile page
+Zod, and refuses to ban or remove your own account or the last active admin.
+Auditing for these lives in Better Auth's `hooks.after`
+(`packages/auth/src/audit-hook.ts`): every write on `/api/auth/admin/*` —
+from these actions or a direct API call — is logged once, without secrets. The profile page
 (`/profile`) lets a user revoke their own device sessions via
 `revokeMySessionAction`.
 

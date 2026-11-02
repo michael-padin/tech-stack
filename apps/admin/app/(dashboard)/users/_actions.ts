@@ -10,7 +10,6 @@ import { countActiveAdmins, getUserRole } from "@repo/db/queries/users";
 import { appRoleSchema } from "@repo/types";
 
 import { type ActionResult, actionError, actionFail, actionOk } from "@/lib/action-result";
-import { audit } from "@/lib/audit";
 
 const inviteSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -20,7 +19,9 @@ const inviteSchema = z.object({
 const userIdSchema = z.string().min(1).max(255);
 const banReasonSchema = z.string().trim().max(500, "Reason is too long.");
 
-// Every user-management action is admin-only (`users.manage`).
+// Every user-management action is admin-only (`users.manage`). Auditing
+// happens in Better Auth's admin hook (@repo/auth audit-hook), which also
+// covers direct /api/auth/admin/* calls.
 async function requireUserManager() {
   return requireCapability("users.manage");
 }
@@ -38,23 +39,16 @@ async function guardTarget(actorId: string, targetId: string): Promise<string | 
 export async function inviteUserAction(
   input: z.input<typeof inviteSchema>,
 ): Promise<ActionResult<{ tempPassword: string }>> {
-  const session = await requireUserManager();
+  await requireUserManager();
   try {
     const parsed = inviteSchema.parse(input);
     // Generate a temp password the inviter can share manually. We don't send
     // email yet — the admin copies the credentials and hands them to the new
     // teammate, who can then change their password after first sign-in.
     const tempPassword = generateTempPassword();
-    const created = await auth.api.createUser({
+    await auth.api.createUser({
       body: { email: parsed.email, name: parsed.name, password: tempPassword, role: parsed.role },
       headers: await headers(),
-    });
-    await audit(session.user, {
-      action: "user.invite",
-      entity: "user",
-      entityId: created.user.id,
-      summary: `Invited ${parsed.email} as ${parsed.role}`,
-      after: { email: parsed.email, name: parsed.name, role: parsed.role },
     });
     revalidatePath("/users");
     return { ok: true, data: { tempPassword } };
@@ -75,12 +69,6 @@ export async function banUserAction(userId: string, reason: string): Promise<Act
     // banUser flips the flag but leaves existing sessions valid until cookie
     // expiry. Revoke them so the ban takes effect immediately.
     await auth.api.revokeUserSessions({ body: { userId: id }, headers: reqHeaders });
-    await audit(session.user, {
-      action: "user.ban",
-      entity: "user",
-      entityId: id,
-      summary: banReason ? `Banned: ${banReason}` : "Banned",
-    });
   } catch (error) {
     return actionError(error, "Couldn't ban the user.");
   }
@@ -89,11 +77,10 @@ export async function banUserAction(userId: string, reason: string): Promise<Act
 }
 
 export async function unbanUserAction(userId: string): Promise<ActionResult> {
-  const session = await requireUserManager();
+  await requireUserManager();
   try {
     const id = userIdSchema.parse(userId);
     await auth.api.unbanUser({ body: { userId: id }, headers: await headers() });
-    await audit(session.user, { action: "user.unban", entity: "user", entityId: id });
   } catch (error) {
     return actionError(error, "Couldn't unban the user.");
   }
@@ -112,7 +99,6 @@ export async function removeUserAction(userId: string): Promise<ActionResult> {
     // the now-deleted user still holds a usable cookie until expiry.
     await auth.api.revokeUserSessions({ body: { userId: id }, headers: reqHeaders });
     await auth.api.removeUser({ body: { userId: id }, headers: reqHeaders });
-    await audit(session.user, { action: "user.remove", entity: "user", entityId: id });
   } catch (error) {
     return actionError(error, "Couldn't remove the account.");
   }
@@ -128,7 +114,7 @@ export async function removeUserAction(userId: string): Promise<ActionResult> {
 export async function resetUserPasswordAction(
   userId: string,
 ): Promise<ActionResult<{ tempPassword: string }>> {
-  const session = await requireUserManager();
+  await requireUserManager();
   try {
     const id = userIdSchema.parse(userId);
     const tempPassword = generateTempPassword();
@@ -138,7 +124,6 @@ export async function resetUserPasswordAction(
       headers: reqHeaders,
     });
     await auth.api.revokeUserSessions({ body: { userId: id }, headers: reqHeaders });
-    await audit(session.user, { action: "user.reset_password", entity: "user", entityId: id });
     revalidatePath("/users");
     return { ok: true, data: { tempPassword } };
   } catch (error) {

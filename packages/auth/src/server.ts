@@ -6,6 +6,7 @@ import { admin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 
 import { accessControl, accessControlRoles } from "./access-control";
+import { auditAdminActions } from "./audit-hook";
 import { keys } from "./keys";
 
 const env = keys();
@@ -64,6 +65,9 @@ export const auth = betterAuth({
   // Database joins fuse session+user reads into a single query — important on
   // Neon serverless where every round-trip is a separate WebSocket exchange.
   advanced: { database: { joins: true } },
+
+  // Every admin-API write lands in the audit log (see ./audit-hook).
+  hooks: { after: auditAdminActions },
 
   plugins: [
     // Multi-role RBAC. `roles` lists every assignable role; `adminRoles` is the
