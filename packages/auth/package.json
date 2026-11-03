@@ -30,10 +30,10 @@
     "@repo/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
-    "dotenv-cli": "^11.0.0",
+    "dotenv-cli": "^11.1.0",
     "next": "catalog:",
     "react": "catalog:",
-    "tsx": "^4.19.2",
+    "tsx": "^4.23.15",
     "typescript": "catalog:",
     "vitest": "^4.1.12"
   },
