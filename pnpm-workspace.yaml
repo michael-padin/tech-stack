@@ -7,7 +7,7 @@ packages:
 # packages stay literal (they describe what's acceptable, not what's pinned).
 catalog:
   # framework
-  next: ^16.4.3
+  next: ^16.4.5
   react: 19.3.1
   react-dom: 19.3.1
 
@@ -21,10 +21,10 @@ catalog:
   zod: ^4.6.7
 
   # UI
-  "@tailwindcss/postcss": ^4.3.3
-  tailwindcss: ^4.3.3
+  "@tailwindcss/postcss": ^4.3.5
+  tailwindcss: ^4.3.5
   lucide-react: ^0.575.0
   mapbox-gl: ^3.21.0
 
   # auth
-  better-auth: ^1.7.15
+  better-auth: ^1.7.18
